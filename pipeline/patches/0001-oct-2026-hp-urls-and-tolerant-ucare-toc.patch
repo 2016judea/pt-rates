@@ -1,0 +1,83 @@
+diff --git a/config/payers.yaml b/config/payers.yaml
+index 458aabc..be2b4a3 100644
+--- a/config/payers.yaml
++++ b/config/payers.yaml
+@@ -7,32 +7,32 @@ payers:
+   # Excellent compliance (5/5) - direct ZIP downloads
+   # These are MN-SPECIFIC files with MN providers
+   - name: "HealthPartners"
+-    index_url: "https://mrfproddestinationdata.blob.core.windows.net/mrf-output/2026-02-01_HealthPartners_HP-Select_in-network-rates.zip"
++    index_url: "https://mrfproddestinationdata.blob.core.windows.net/mrf-output/2026-10-01_HealthPartners_HP-Select_in-network-rates.zip"
+     enabled: true
+     file_type: "zip"
+     notes: "MN-based integrated system. MN-specific data. ~687MB per network."
+     # Additional MN networks to process (19 total networks):
+     additional_files:
+       # Core MN networks (already loaded)
+-      - "https://mrfproddestinationdata.blob.core.windows.net/mrf-output/2026-02-01_HealthPartners_Open-Access+Simplica_in-network-rates.zip"
+-      - "https://mrfproddestinationdata.blob.core.windows.net/mrf-output/2026-02-01_HealthPartners_Cornerstone_in-network-rates.zip"
+-      - "https://mrfproddestinationdata.blob.core.windows.net/mrf-output/2026-02-01_HealthPartners_Achieve-Large-Employer_in-network-rates.zip"
+-      - "https://mrfproddestinationdata.blob.core.windows.net/mrf-output/2026-02-01_HealthPartners_Achieve-Small-Employer+Peak_in-network-rates.zip"
+-      - "https://mrfproddestinationdata.blob.core.windows.net/mrf-output/2026-02-01_HealthPartners_State-of-MN_in-network-rates.zip"
++      - "https://mrfproddestinationdata.blob.core.windows.net/mrf-output/2026-10-01_HealthPartners_Open-Access+Simplica_in-network-rates.zip"
++      - "https://mrfproddestinationdata.blob.core.windows.net/mrf-output/2026-10-01_HealthPartners_Cornerstone_in-network-rates.zip"
++      - "https://mrfproddestinationdata.blob.core.windows.net/mrf-output/2026-10-01_HealthPartners_Achieve-Large-Employer_in-network-rates.zip"
++      - "https://mrfproddestinationdata.blob.core.windows.net/mrf-output/2026-10-01_HealthPartners_Achieve-Small-Employer+Peak_in-network-rates.zip"
++      - "https://mrfproddestinationdata.blob.core.windows.net/mrf-output/2026-10-01_HealthPartners_State-of-MN_in-network-rates.zip"
+       # Additional networks
+-      - "https://mrfproddestinationdata.blob.core.windows.net/mrf-output/2026-02-01_HealthPartners_Coborns_in-network-rates.zip"
+-      - "https://mrfproddestinationdata.blob.core.windows.net/mrf-output/2026-02-01_HealthPartners_Essentia_in-network-rates.zip"
+-      - "https://mrfproddestinationdata.blob.core.windows.net/mrf-output/2026-02-01_HealthPartners_Essentia-ND_in-network-rates.zip"
+-      - "https://mrfproddestinationdata.blob.core.windows.net/mrf-output/2026-02-01_HealthPartners_MercyOne_Tier1_in-network-rates.zip"
+-      - "https://mrfproddestinationdata.blob.core.windows.net/mrf-output/2026-02-01_HealthPartners_Monument-Health-Caregiver_in-network-rates.zip"
+-      - "https://mrfproddestinationdata.blob.core.windows.net/mrf-output/2026-02-01_HealthPartners_Northern-Trust_in-network-rates.zip"
+-      - "https://mrfproddestinationdata.blob.core.windows.net/mrf-output/2026-02-01_HealthPartners_Olivia_in-network-rates.zip"
+-      - "https://mrfproddestinationdata.blob.core.windows.net/mrf-output/2026-02-01_HealthPartners_Spencer-Mahaska_in-network-rates.zip"
+-      - "https://mrfproddestinationdata.blob.core.windows.net/mrf-output/2026-02-01_HealthPartners_Trinity-ND_in-network-rates.zip"
+-      - "https://mrfproddestinationdata.blob.core.windows.net/mrf-output/2026-02-01_HealthPartners_UIHC-Tier1_in-network-rates.zip"
+-      - "https://mrfproddestinationdata.blob.core.windows.net/mrf-output/2026-02-01_HealthPartners_UIHC-Tier2_in-network-rates.zip"
+-      - "https://mrfproddestinationdata.blob.core.windows.net/mrf-output/2026-02-01_HealthPartners_VGM_in-network-rates.zip"
+-      - "https://mrfproddestinationdata.blob.core.windows.net/mrf-output/2026-02-01_HealthPartners_Waterloo-School_in-network-rates.zip"
++      - "https://mrfproddestinationdata.blob.core.windows.net/mrf-output/2026-10-01_HealthPartners_Coborns_in-network-rates.zip"
++      - "https://mrfproddestinationdata.blob.core.windows.net/mrf-output/2026-10-01_HealthPartners_Essentia_in-network-rates.zip"
++      - "https://mrfproddestinationdata.blob.core.windows.net/mrf-output/2026-10-01_HealthPartners_Essentia-ND_in-network-rates.zip"
++      - "https://mrfproddestinationdata.blob.core.windows.net/mrf-output/2026-10-01_HealthPartners_MercyOne_Tier1_in-network-rates.zip"
++      - "https://mrfproddestinationdata.blob.core.windows.net/mrf-output/2026-10-01_HealthPartners_Monument-Health-Caregiver_in-network-rates.zip"
++      - "https://mrfproddestinationdata.blob.core.windows.net/mrf-output/2026-10-01_HealthPartners_Northern-Trust_in-network-rates.zip"
++      - "https://mrfproddestinationdata.blob.core.windows.net/mrf-output/2026-10-01_HealthPartners_Olivia_in-network-rates.zip"
++      - "https://mrfproddestinationdata.blob.core.windows.net/mrf-output/2026-10-01_HealthPartners_Spencer-Mahaska_in-network-rates.zip"
++      - "https://mrfproddestinationdata.blob.core.windows.net/mrf-output/2026-10-01_HealthPartners_Trinity-ND_in-network-rates.zip"
++      - "https://mrfproddestinationdata.blob.core.windows.net/mrf-output/2026-10-01_HealthPartners_UIHC-Tier1_in-network-rates.zip"
++      - "https://mrfproddestinationdata.blob.core.windows.net/mrf-output/2026-10-01_HealthPartners_UIHC-Tier2_in-network-rates.zip"
++      - "https://mrfproddestinationdata.blob.core.windows.net/mrf-output/2026-10-01_HealthPartners_VGM_in-network-rates.zip"
++      - "https://mrfproddestinationdata.blob.core.windows.net/mrf-output/2026-10-01_HealthPartners_Waterloo-School_in-network-rates.zip"
+ 
+   # UCare - MN-based nonprofit (Medicare/Medicaid focused)
+   - name: "UCare"
+diff --git a/scripts/ingest_ucare.py b/scripts/ingest_ucare.py
+index ee55a58..d30dd23 100644
+--- a/scripts/ingest_ucare.py
++++ b/scripts/ingest_ucare.py
+@@ -44,15 +44,14 @@ def fetch_in_network_files(index_url: str) -> list[dict]:
+     
+     resp = httpx.get(index_url, timeout=60, follow_redirects=True)
+     resp.raise_for_status()
+-    data = resp.json()
+-    
++    # The UCare TOC is hand-edited and not valid JSON (missing commas between
++    # entries, seen 2026-10-04) -- pull the in-network locations out by regex.
++    import re
+     files = []
+-    for rs in data.get('reporting_structure', []):
+-        for inf in rs.get('in_network_files', []):
+-            loc = inf.get('location', '')
+-            desc = inf.get('description', '')
+-            if loc.startswith('http'):
+-                files.append({'url': loc, 'desc': desc})
++    for m in re.finditer(r'"description"\s*:\s*"([^"]*)"\s*,\s*"location"\s*:\s*"(https?://[^"]+)"', resp.text):
++        desc, loc = m.group(1), m.group(2)
++        if 'InNetwork' in loc or 'in-network' in loc.lower() or 'in-network' in desc.lower():
++            files.append({'url': loc, 'desc': loc.rsplit('/',1)[-1].split('?')[0]})
+     
+     # Deduplicate by URL
+     seen = set()

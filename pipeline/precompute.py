@@ -92,16 +92,21 @@ def main():
     types = con.execute("SELECT negotiated_type, billing_class, COUNT(*) FROM rates GROUP BY 1,2 ORDER BY 3 DESC").fetchall()
     print("negotiated_type x billing_class:", types)
 
+    zips = tuple(json.loads((pipe / "data" / "user_config.json").read_text()).get("zip_prefixes", []))
+    # NPPES postal_code search matches the MAILING address too, so a few hundred
+    # out-of-state NPIs leak in; keep only practice locations inside the prefixes.
     prov = {r[0]: {"name": r[1], "type": r[2], "addr": (r[3] or "").strip().upper(), "city": r[4], "zip": r[5]}
-            for r in con.execute("SELECT npi, provider_name, provider_type, address_line1, city, zip FROM nppes_providers").fetchall()}
+            for r in con.execute("SELECT npi, provider_name, provider_type, address_line1, city, zip FROM nppes_providers").fetchall()
+            if (r[5] or "").startswith(zips)}
+    print(f"{len(prov)} NPPES providers inside zips {zips}")
 
-    rows = con.execute(f"""
+    rows = [r for r in con.execute(f"""
         SELECT payer_name, TRIM(npi), billing_code, negotiated_rate, tin, last_updated, file_source
         FROM rates
         WHERE billing_code IN ({",".join("?" * len(codes))})
           AND lower(coalesce(negotiated_type,'negotiated')) IN {KEEP_TYPES}
           AND (billing_class IS NULL OR billing_class = '' OR lower(billing_class) IN {KEEP_CLASS})
-    """, codes).fetchall()
+    """, codes).fetchall() if r[1] in prov]
     print(f"{len(rows):,} rate rows kept")
 
     # --- TIN per NPI (most common), orgs per TIN, orgs per address -------------

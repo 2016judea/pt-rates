@@ -182,7 +182,7 @@ const state = { meta: null, clinics: [], payers: {}, clinic: null, payer: null, 
 
 // theme
 const root = document.documentElement;
-try { const t = localStorage.getItem('theme'); if (t) root.dataset.theme = t; } catch (e) {}
+try { const t = new URLSearchParams(location.search).get('theme') || localStorage.getItem('theme'); if (t) root.dataset.theme = t; } catch (e) {}
 const isDark = () => root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
 const paintTheme = () => { $('theme').textContent = isDark() ? 'Light' : 'Dark'; };
 $('theme').onclick = () => { root.dataset.theme = isDark() ? 'light' : 'dark'; try { localStorage.setItem('theme', root.dataset.theme); } catch (e) {} paintTheme(); };
@@ -327,7 +327,7 @@ async function renderMarket() {
   const data = await payerFile(pm.slug);
   const codes = state.meta.codes.filter(k => data.market[k.code]);
   const ex = k => data.market[k.code];
-  const core = codes.find(k => k.code === '97110') || codes[0];
+  const core = ['97110', '97140', '97530', '97161'].map(c => codes.find(k => k.code === c)).find(Boolean) || codes.reduce((a, k) => ex(k).n > ex(a).n ? k : a, codes[0]);
   $('mverdict').innerHTML = `<p class="who">${esc(pm.name)} · ${pm.clinics} Twin Cities PT clinics in its file</p>
     <h1>The typical ${esc(pm.name)} clinic is paid <b class="up">${fmt(ex(core).median)}</b> for ${esc(core.short.toLowerCase())}, from ${fmt(ex(core).min)} to ${fmt(ex(core).max)}.</h1>
     <p>Each line below is the median across clinics, one rate per clinic. Type your clinic above to see where you sit. File dated ${pm.last_updated || 'n/a'}.</p>`;
