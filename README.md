@@ -116,19 +116,35 @@ cd ~/Desktop/pt-rates-data && uv venv .venv && VIRTUAL_ENV=$PWD/.venv uv pip ins
 git apply ~/Desktop/pt-rates/pipeline/patches/*.patch        # Oct-2026 HP URLs, tolerant UCare TOC
 cp ~/Desktop/pt-rates/pipeline/user_config.json data/        # Twin Cities zips, Maverick as primary
 
-# 1. NPPES + HealthPartners + UCare, then the slices  (~1 h, mostly HP downloads)
+# 1. NPPES + UCare + HealthPartners (19 networks x 700 MB, ~5 min each), then the slices
 ~/Desktop/pt-rates/pipeline/refresh.sh
 
-# 2. BCBS MN: provider-group scan then 645 Local files  (2–4 h; runs under caffeinate)
+# 2. BCBS MN: 342 Local parts from the newest monthly index (~40 s each; Aware is the first 25)
 ~/Desktop/pt-rates/pipeline/refresh.sh bcbs
 
-# 3. check, deploy
-python3 scripts/check_slices.py && VERCEL_TOKEN=... python3 scripts/deploy.py
+# 3. slices only (after any ingest finishes), check, README table, deploy
+~/Desktop/pt-rates/pipeline/refresh.sh slices
+python3 scripts/check_slices.py && python3 scripts/update_readme.py && VERCEL_TOKEN=... python3 scripts/deploy.py
 ```
+
+The two big ingests stream with ijson in ~170 MB of memory
+(`pipeline/ingest_stream.py`); the pipeline's own ingesters `json.loads()` whole
+files and swap the machine. To run both payers at once, write BCBS to a side
+file (`ingest_stream.py bcbs --db data/rates_bcbs.duckdb --nppes-db <copy of
+rates.duckdb>`) and pass `--extra-db` to `precompute.py`: DuckDB allows one
+writer per file. To build slices while an ingest is still writing, copy the
+`.duckdb` and its `.wal` and point `--db` at the copy.
+
+Build of 2026-10-04: HealthPartners networks 1–6 (the core Minnesota ones) and
+BCBS Aware were in; HP networks 7–19 were still downloading. Step 3 folds them
+in when they land.
 
 If a HealthPartners URL 404s, bump the `YYYY-MM-01` prefix in
 `config/payers.yaml` to the current month — the blob store keeps only the latest
-month (Feb's files were gone by Oct 2026).
+month (Feb's files were gone by Oct 2026). If BCBS's index 403s, the newest
+`mktg.bluecrossmn.com/mrf/2026/<YYYY-MM-01>_..._index.json` that answers 200 is
+the one to pass as `--index` (2026-09-01 on 2026-10-04; the 2026-10-01 file was
+not yet public).
 
 ## Not this
 
