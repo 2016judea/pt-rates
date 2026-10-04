@@ -226,7 +226,7 @@ function renderMenu() {
 }
 const closeMenu = () => { menu.classList.remove('open'); q.setAttribute('aria-expanded', 'false'); state.active = -1; };
 q.addEventListener('input', () => { state.active = -1; search.classList.toggle('has', !!q.value); renderMenu(); if (!q.value.trim()) showMarket(); });
-q.addEventListener('focus', () => { if (q.value.trim()) renderMenu(); });
+q.addEventListener('focus', () => { if (state.clinic) q.select(); else if (q.value.trim()) renderMenu(); });
 q.addEventListener('keydown', e => {
   const opts = [...menu.querySelectorAll('button')];
   if (e.key === 'ArrowDown') { e.preventDefault(); state.active = Math.min(opts.length - 1, state.active + 1); opts.forEach((o, i) => o.setAttribute('aria-selected', i === state.active)); opts[state.active]?.scrollIntoView({ block: 'nearest' }); }
