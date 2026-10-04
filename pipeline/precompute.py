@@ -51,6 +51,8 @@ EXCLUDED = [
 ]
 
 KEEP_TYPES = ("negotiated", "fee schedule")
+# Base prices only (no billing_code_modifier) and, for BCBS, the Aware network
+# (its broad commercial PPO; the other 13 file groups are custom/narrow networks).
 KEEP_CLASS = ("professional",)
 
 
@@ -116,64 +118,71 @@ def main():
         WHERE billing_code IN ({",".join("?" * len(codes))})
           AND lower(coalesce(negotiated_type,'negotiated')) IN {KEEP_TYPES}
           AND (billing_class IS NULL OR billing_class = '' OR lower(billing_class) IN {KEEP_CLASS})
+          AND file_source NOT LIKE '%#mod=%'
+          AND (file_source NOT LIKE '%#network=%' OR file_source LIKE '%#network=Aware Network%')
     """, codes).fetchall() if r[1] in prov]
     print(f"{len(rows):,} rate rows kept")
 
-    # --- TIN per NPI (most common), orgs per TIN, orgs per address -------------
-    tin_votes = defaultdict(Counter)
-    for payer, npi, code, rate, tin, lu, src in rows:
-        if tin:
-            tin_votes[npi][str(tin)] += 1
-    npi_tin = {n: c.most_common(1)[0][0] for n, c in tin_votes.items()}
+    # --- clinic per (npi, tin) --------------------------------------------------
+    # A therapist can bill under two TINs (two clinics). The TIN on the row, not
+    # the NPI, says which clinic a rate belongs to.
+    rate_rows_per_npi = Counter(r[1] for r in rows)
     orgs_by_tin = defaultdict(set)
-    for n, t in npi_tin.items():
-        if prov.get(n, {}).get("type") == "Organization":
-            orgs_by_tin[t].add(n)
+    for payer, npi, code, rate, tin, lu, src in rows:
+        if tin and prov.get(npi, {}).get("type") == "Organization":
+            orgs_by_tin[str(tin)].add(npi)
     orgs_by_addr = defaultdict(set)
     for n, p in prov.items():
         if p["type"] == "Organization" and p["addr"] and p["zip"]:
             orgs_by_addr[(p["addr"], p["zip"])].add(n)
 
     def pick_org(cands):
-        # the org with the most rate rows, else lowest NPI, for determinism
         return sorted(cands, key=lambda n: (-rate_rows_per_npi.get(n, 0), n))[0]
-
-    rate_rows_per_npi = Counter(r[1] for r in rows)
 
     clinic_of = {}
     tin_of_clinic = {}
     how = Counter()
-    for npi in {r[1] for r in rows}:
+
+    def resolve(npi, tin):
+        key = (npi, tin)
+        if key in clinic_of:
+            return clinic_of[key]
         p = prov.get(npi)
         if npi in overrides:
-            clinic_of[npi] = overrides[npi]; how["override"] += 1; continue
-        if p and p["type"] == "Organization":
-            clinic_of[npi] = npi; how["org"] += 1; continue
-        t = npi_tin.get(npi)
-        if t and orgs_by_tin.get(t):
-            clinic_of[npi] = pick_org(orgs_by_tin[t]); how["tin->org"] += 1; continue
-        if p and p["addr"] and orgs_by_addr.get((p["addr"], p["zip"])):
-            clinic_of[npi] = pick_org(orgs_by_addr[(p["addr"], p["zip"])]); how["addr->org"] += 1; continue
-        if t:
-            clinic_of[npi] = "t" + hashlib.sha1(t.encode()).hexdigest()[:10]; tin_of_clinic[clinic_of[npi]] = t; how["tin-group"] += 1; continue
-        clinic_of[npi] = npi; how["solo"] += 1
-    print("roll-up:", dict(how))
+            c, h = overrides[npi], "override"
+        elif p and p["type"] == "Organization":
+            c, h = npi, "org"
+        elif tin and orgs_by_tin.get(tin):
+            c, h = pick_org(orgs_by_tin[tin]), "tin->org"
+        elif p and p["addr"] and orgs_by_addr.get((p["addr"], p["zip"])):
+            c, h = pick_org(orgs_by_addr[(p["addr"], p["zip"])]), "addr->org"
+        elif tin:
+            c, h = "t" + hashlib.sha1(tin.encode()).hexdigest()[:10], "tin-group"
+            tin_of_clinic[c] = tin
+        else:
+            c, h = npi, "solo"
+        clinic_of[key] = c
+        how[h] += 1
+        return c
 
     # --- distinct rates per clinic / payer / code -----------------------------
     seen = defaultdict(set)      # (payer, clinic, code) -> set(rate)
     members = defaultdict(set)   # clinic -> npis
     payer_meta = {}
     for payer, npi, code, rate, tin, lu, src in rows:
-        c = clinic_of[npi]
+        c = resolve(npi, str(tin) if tin else None)
         seen[(payer, c, code)].add(float(rate))
         members[c].add(npi)
         m = payer_meta.setdefault(payer, {"rows": 0, "last_updated": None, "files": set(), "npis": set()})
         m["rows"] += 1
         m["npis"].add(npi)
         m["files"].add(src.split("#")[0].rsplit("/", 1)[-1].split("?")[0])
+        if "#network=" in src:
+            m.setdefault("networks", set()).add(src.split("#network=")[1].split("#")[0])
         if lu and (m["last_updated"] is None or lu > m["last_updated"]):
             m["last_updated"] = lu
 
+    print("roll-up (npi,tin pairs):", dict(how))
     clinic_rate = {(p, c, k): statistics.median(v) for (p, c, k), v in seen.items()}
 
     # --- clinic directory -----------------------------------------------------
@@ -225,7 +234,7 @@ def main():
         m = payer_meta[payer]
         payers_out.append({"name": payer, "slug": s, "rows": m["rows"], "npis": len(m["npis"]), "clinics": len(by_clinic),
                            "codes": len(market), "last_updated": m["last_updated"].isoformat() if m["last_updated"] else None,
-                           "files": len(m["files"])})
+                           "files": len(m["files"]), "networks": sorted(m.get("networks", []))})
         print(f"{payer}: {m['rows']:,} rows, {len(m['npis'])} NPIs, {len(by_clinic)} clinics, {len(market)} codes with >=3 clinics")
 
     meta = {

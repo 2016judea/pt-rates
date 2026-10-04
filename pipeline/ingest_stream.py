@@ -94,10 +94,14 @@ def tin_of(pg):
 
 
 def pass_provider_refs(stream):
+    """group_id -> [(npi, tin, network)]. BCBS tags each provider group with a
+    network_name (Aware, Blue Plus, ...); the same NPI carries a different fee
+    schedule per network, so the network rides along in file_source."""
     groups = {}
     for pref in ijson.common.items(section_events(stream, "provider_references"), "provider_references.item"):
         gid = pref.get("provider_group_id")
-        hits = [(str(n), tin_of(pg)) for pg in pref.get("provider_groups", []) for n in pg.get("npi", []) if str(n) in TARGET]
+        net = "|".join(pref.get("network_name") or []) or None
+        hits = [(str(n), tin_of(pg), net) for pg in pref.get("provider_groups", []) for n in pg.get("npi", []) if str(n) in TARGET]
         if hits and gid is not None:
             groups[gid] = hits
     return groups
@@ -111,7 +115,7 @@ def pass_in_network(stream, groups, target_cpts, payer, last_updated, file_sourc
         for nr in item.get("negotiated_rates", []):
             provs = [p for ref in nr.get("provider_references", []) for p in groups.get(ref, ())]
             if not provs:
-                provs = [(str(n), tin_of(pg)) for pg in nr.get("provider_groups", []) for n in pg.get("npi", []) if str(n) in TARGET]
+                provs = [(str(n), tin_of(pg), None) for pg in nr.get("provider_groups", []) for n in pg.get("npi", []) if str(n) in TARGET]
             if not provs:
                 continue
             for price in nr.get("negotiated_prices", []):
@@ -119,11 +123,17 @@ def pass_in_network(stream, groups, target_cpts, payer, last_updated, file_sourc
                 if rate is None:
                     continue
                 sc = price.get("service_code") or []
-                for npi, tin in provs:
+                # The same NPI/code carries several prices: the base rate plus
+                # modifier variants (52/53 reduced service, CO/CQ assistant at
+                # 85%). RateRecord has no modifier column, so the tag rides in
+                # file_source and precompute keeps only untagged (base) prices.
+                mods = ",".join(price.get("billing_code_modifier") or [])
+                for npi, tin, net in provs:
+                    tag = (f"#network={net}" if net else "") + (f"#mod={mods}" if mods else "")
                     yield RateRecord(payer_name=payer, last_updated=last_updated, billing_code=code,
                                      billing_code_type=item.get("billing_code_type", "CPT"), negotiated_rate=Decimal(str(rate)),
                                      negotiated_type=price.get("negotiated_type", ""), billing_class=price.get("billing_class", ""),
-                                     place_of_service=sc[0] if sc else None, npi=npi, tin=tin, file_source=file_source)
+                                     place_of_service=sc[0] if sc else None, npi=npi, tin=tin, file_source=file_source + tag)
 
 
 def ingest_member(open_stream, db, payer, src, target_cpts):
