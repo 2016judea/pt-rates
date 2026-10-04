@@ -28,7 +28,15 @@ workers'-comp case manager what the market actually pays.
 
 ## What is in, what is not
 
-__PAYER_TABLE__
+<!-- payer-table -->
+| Payer | Rate rows kept | Twin Cities PT clinics | Codes with 3+ clinics | File dated |
+|---|---|---|---|---|
+| BCBS Minnesota (Aware Network) | 254,112 | 195 | 39 | 2026-07-27 |
+| HealthPartners | 1,282,392 | 134 | 39 | 2026-10-01 |
+| UCare | 235 | 23 | 5 | 2026-09-16 |
+
+278 clinics in the search box, from 4,812 NPPES PT/PTA records. Built 2026-10-04.
+<!-- /payer-table -->
 
 Not in, and why (each cost a day to learn in Feb 2026):
 
@@ -72,9 +80,9 @@ Rules the numbers obey:
 | Source | What | Date |
 |---|---|---|
 | HealthPartners TiC in-network files (`mrfproddestinationdata.blob.core.windows.net/mrf-output/2026-10-01_HealthPartners_*_in-network-rates.zip`) | negotiated rates by individual NPI | file dated 2026-10-01 |
-| UCare TiC table of contents (`ucm-p-001.sitecorecontenthub.cloud/.../ucare_toc.json`) | negotiated rates by org NPI | __UCARE_DATE__ |
-| BCBS MN index (`mktg.bluecrossmn.com/mrf/2026/2026-01-01_..._index.json`, 645 "Local" files) | negotiated rates by provider group | __BCBS_DATE__ |
-| NPPES registry API, taxonomies 225100000X / 225200000X, zips 550, 551, 552, 553, 554, 556 | the provider list and clinic names | pulled __BUILT__ |
+| UCare TiC table of contents (`ucm-p-001.sitecorecontenthub.cloud/.../ucare_toc.json`) | negotiated rates by org NPI | file dated 2026-09-16 |
+| BCBS MN index (`mktg.bluecrossmn.com/mrf/2026/2026-01-01_..._index.json`, 645 "Local" files) | negotiated rates by provider group | file dated 2026-07-27 |
+| NPPES registry API, taxonomies 225100000X / 225200000X, zips 550, 551, 552, 553, 554, 556 | the provider list and clinic names | pulled 2026-10-04 |
 | `config/cpt_codes.yaml` in the pipeline repo | the PT CPT codes | — |
 
 Plain-language code names are in `pipeline/cpt_gloss.json`.

@@ -119,7 +119,7 @@ def main():
           AND lower(coalesce(negotiated_type,'negotiated')) IN {KEEP_TYPES}
           AND (billing_class IS NULL OR billing_class = '' OR lower(billing_class) IN {KEEP_CLASS})
           AND file_source NOT LIKE '%#mod=%'
-          AND (file_source NOT LIKE '%#network=%' OR file_source LIKE '%#network=Aware Network%')
+          AND (payer_name <> 'BCBS Minnesota' OR file_source LIKE '%#network=Aware Network%')
     """, codes).fetchall() if r[1] in prov]
     print(f"{len(rows):,} rate rows kept")
 

@@ -117,6 +117,9 @@ td.name b{display:block;font-weight:800} td.name span{font-size:12px;color:var(-
 td.med{font-weight:800}
 td .rng{display:block;font-size:11px;color:var(--ink-3)}
 .tbl-wrap{overflow-x:auto;border-radius:var(--radius)}
+td.num{white-space:nowrap}
+@media (max-width:600px){ td .gloss,td .rng{display:none} th:nth-child(3),td:nth-child(3){display:none} th,td{padding:10px 10px;font-size:14px} }
+.row .nums span{white-space:nowrap}
 
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;font-size:14px;color:var(--ink-2)}
 .card ul{margin:8px 0 0;padding-left:18px} .card li{margin:4px 0}
@@ -127,7 +130,7 @@ footer p{margin:6px 0}
 @media (min-width:900px){
   .wrap{max-width:860px}
   .verdict{padding:30px 32px 26px}
-  .row{display:grid;grid-template-columns:1.7fr 1fr 1.3fr;align-items:center;column-gap:20px;padding:12px 18px}
+  .row{display:grid;grid-template-columns:1.6fr 1.2fr 1.2fr;align-items:center;column-gap:20px;padding:12px 18px}
   .row .top{grid-column:1} .row .nums{grid-column:2;margin-top:0} .row .bar{grid-column:3;margin-top:0}
   .row .nums .n{margin-left:0}
 }
@@ -151,6 +154,7 @@ footer p{margin:6px 0}
 <div id="clinicView" class="hidden">
   <div class="tabs" id="tabs" role="tablist"></div>
   <section class="verdict" id="verdict" aria-live="polite"></section>
+  <p class="hint" id="missingPayers" style="margin-top:10px"></p>
   <h2 id="rowsHead">Code by code</h2>
   <div class="rows" id="rows"></div>
   <div class="legend"><span><i class="dot"></i>this clinic</span><span><i class="line"></i>market median</span><span><i class="band"></i>middle half of clinics</span><span>line = lowest to highest</span></div>
@@ -244,6 +248,8 @@ async function selectClinic(c, push) {
   state.payer = c.payers.includes(state.payer) ? state.payer : c.payers[0];
   $('marketView').classList.add('hidden'); $('clinicView').classList.remove('hidden');
   renderTabs($('tabs'), state.meta.payers.map(p => p.name), state.payer, c.payers, async name => { state.payer = name; await renderClinic(); });
+  const missing = state.meta.payers.map(p => p.name).filter(n => !c.payers.includes(n));
+  $('missingPayers').textContent = missing.length ? `${missing.join(' and ')} publish${missing.length === 1 ? 'es' : ''} no rate for ${c.name} — either not in network, or not in the file.` : '';
   await renderClinic();
 }
 function renderTabs(el, names, selected, enabled, onpick) {
@@ -268,6 +274,7 @@ async function renderClinic() {
   const payer = esc(pm.name), who = esc(c.name);
   let h;
   if (!codes.length) h = `<h1>No ${payer} rate on file for ${who} on a code with enough clinics to compare.</h1>`;
+  else if (below.length === 0 && above.length === 0) h = `<h1>${who} is paid <b class="up">exactly the market median on all ${codes.length} codes</b> with ${payer}.</h1>`;
   else if (below.length === 0) h = `<h1>${who} is paid <b class="up">at or above the market median on all ${codes.length} codes</b> with ${payer}.</h1>`;
   else h = `<h1>${who} is paid <b>below the market median on ${below.length} of ${codes.length} codes</b> with ${payer}.</h1>`;
   const gaps = below.map(k => pct(mine[k.code], data.market[k.code].median));
@@ -279,7 +286,7 @@ async function renderClinic() {
     ${codes.length ? `<div class="stats">
       <div class="stat"><b>${below.length}</b><span>codes below median</span></div>
       <div class="stat"><b>${above.length}</b><span>codes above median</span></div>
-      ${worst ? `<div class="stat"><b>${pct(mine[worst.code], data.market[worst.code].median)}%</b><span>biggest gap: ${esc(worst.short)}</span></div>` : `<div class="stat"><b>—</b><span>no code below</span></div>`}
+      ${worst ? `<div class="stat"><b>${pct(mine[worst.code], data.market[worst.code].median)}%</b><span>biggest gap: ${esc(worst.short)}</span></div>` : aboveYou(data, mine, codes)}
     </div>` : ''}`;
   const rows = $('rows'); rows.innerHTML = '';
   $('rowsHead').textContent = codes.length ? `Code by code · ${payer}` : 'Codes';
@@ -301,6 +308,13 @@ async function renderClinic() {
     el.innerHTML = `<div class="top"><span class="name" style="font-size:14px">No ${payer} rate on file for ${who}: ${missing.map(k => esc(k.short)).join(', ')}</span></div>`;
     rows.appendChild(el);
   }
+}
+function aboveYou(data, mine, codes) {
+  // when nothing is below the median: how many clinics are paid MORE than you on the core code
+  const k = ['97110', '97140', '97530', '97161'].map(c => codes.find(x => x.code === c)).find(Boolean) || codes[0];
+  const you = mine[k.code], m = data.market[k.code];
+  const n = Object.values(data.clinics).filter(v => v[k.code] != null && v[k.code] > you).length;
+  return `<div class="stat"><b>${n} of ${m.n}</b><span>clinics paid more than you for ${esc(k.short.toLowerCase())} (top: ${fmt(m.max)})</span></div>`;
 }
 function bar(m, you, up) {
   const lo = Math.min(m.min, you ?? m.min), hi = Math.max(m.max, you ?? m.max), span = (hi - lo) || 1;
@@ -333,7 +347,7 @@ async function renderMarket() {
     <p>Each line below is the median across clinics, one rate per clinic. Type your clinic above to see where you sit. File dated ${pm.last_updated || 'n/a'}.</p>`;
   const t = $('mtable');
   t.innerHTML = `<thead><tr><th>Code</th><th>Median</th><th>Middle half</th><th>Clinics</th></tr></thead><tbody>` +
-    codes.map(k => { const m = ex(k); return `<tr><td class="name"><b>${esc(k.short)}</b><span>CPT ${k.code} · ${esc(k.long)}</span></td><td class="med">${fmt(m.median)}</td><td>${fmt(m.p25)}–${fmt(m.p75)}<span class="rng">all: ${fmt(m.min)}–${fmt(m.max)}</span></td><td>${m.n}</td></tr>`; }).join('') + '</tbody>';
+    codes.map(k => { const m = ex(k); return `<tr><td class="name"><b>${esc(k.short)}</b><span>CPT ${k.code}<span class="gloss"> · ${esc(k.long)}</span></span></td><td class="med">${fmt(m.median)}</td><td class="num">${fmt(m.p25)}–${fmt(m.p75)}<span class="rng">all: ${fmt(m.min)}–${fmt(m.max)}</span></td><td class="num">${m.n}</td></tr>`; }).join('') + '</tbody>';
 }
 
 // ---- sources ------------------------------------------------------------

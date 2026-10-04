@@ -1,0 +1,288 @@
+{
+ "built": "2026-10-04",
+ "default_clinic": "1073185393",
+ "zip_prefixes": [
+  "550",
+  "551",
+  "552",
+  "553",
+  "554",
+  "556"
+ ],
+ "codes": [
+  {
+   "code": "97161",
+   "short": "First visit (simple)",
+   "long": "A first-visit evaluation, low complexity"
+  },
+  {
+   "code": "97162",
+   "short": "First visit (moderate)",
+   "long": "A first-visit evaluation, moderate complexity"
+  },
+  {
+   "code": "97163",
+   "short": "First visit (complex)",
+   "long": "A first-visit evaluation, high complexity"
+  },
+  {
+   "code": "97164",
+   "short": "Re-check visit",
+   "long": "A re-evaluation of an existing patient"
+  },
+  {
+   "code": "97110",
+   "short": "Exercise",
+   "long": "Therapeutic exercise, per 15 minutes"
+  },
+  {
+   "code": "97112",
+   "short": "Balance & nerve retraining",
+   "long": "Neuromuscular re-education, per 15 minutes"
+  },
+  {
+   "code": "97116",
+   "short": "Walking training",
+   "long": "Gait training, per 15 minutes"
+  },
+  {
+   "code": "97140",
+   "short": "Hands-on therapy",
+   "long": "Manual therapy, per 15 minutes"
+  },
+  {
+   "code": "97530",
+   "short": "Functional activities",
+   "long": "Therapeutic activities, per 15 minutes"
+  },
+  {
+   "code": "97535",
+   "short": "Daily-living training",
+   "long": "Self-care and home-management training, per 15 minutes"
+  },
+  {
+   "code": "97537",
+   "short": "Return-to-work training",
+   "long": "Community or work reintegration, per 15 minutes"
+  },
+  {
+   "code": "97542",
+   "short": "Wheelchair training",
+   "long": "Wheelchair management and training, per 15 minutes"
+  },
+  {
+   "code": "97545",
+   "short": "Work hardening (first 2h)",
+   "long": "Work hardening or conditioning, first 2 hours"
+  },
+  {
+   "code": "97546",
+   "short": "Work hardening (+1h)",
+   "long": "Work hardening or conditioning, each extra hour"
+  },
+  {
+   "code": "97750",
+   "short": "Physical performance test",
+   "long": "Physical performance test or measurement, per 15 minutes"
+  },
+  {
+   "code": "97755",
+   "short": "Assistive tech assessment",
+   "long": "Assistive technology assessment, per 15 minutes"
+  },
+  {
+   "code": "97760",
+   "short": "Brace fitting & training",
+   "long": "Orthotic management and training, first visit"
+  },
+  {
+   "code": "97761",
+   "short": "Prosthetic training",
+   "long": "Prosthetic training, first visit"
+  },
+  {
+   "code": "97763",
+   "short": "Brace/prosthetic follow-up",
+   "long": "Orthotic or prosthetic management, later visits"
+  },
+  {
+   "code": "97010",
+   "short": "Hot or cold pack",
+   "long": "Hot or cold pack applied"
+  },
+  {
+   "code": "97012",
+   "short": "Traction",
+   "long": "Mechanical traction"
+  },
+  {
+   "code": "97014",
+   "short": "E-stim (unattended)",
+   "long": "Electrical stimulation, unattended"
+  },
+  {
+   "code": "97016",
+   "short": "Compression device",
+   "long": "Vasopneumatic device"
+  },
+  {
+   "code": "97018",
+   "short": "Paraffin bath",
+   "long": "Paraffin bath"
+  },
+  {
+   "code": "97022",
+   "short": "Whirlpool",
+   "long": "Whirlpool"
+  },
+  {
+   "code": "97024",
+   "short": "Diathermy",
+   "long": "Diathermy"
+  },
+  {
+   "code": "97032",
+   "short": "E-stim (hands-on)",
+   "long": "Electrical stimulation, manual, per 15 minutes"
+  },
+  {
+   "code": "97033",
+   "short": "Iontophoresis",
+   "long": "Iontophoresis, per 15 minutes"
+  },
+  {
+   "code": "97034",
+   "short": "Contrast baths",
+   "long": "Contrast baths, per 15 minutes"
+  },
+  {
+   "code": "97035",
+   "short": "Ultrasound",
+   "long": "Ultrasound, per 15 minutes"
+  },
+  {
+   "code": "97036",
+   "short": "Hubbard tank",
+   "long": "Hubbard tank, per 15 minutes"
+  },
+  {
+   "code": "20560",
+   "short": "Dry needling (1-2 muscles)",
+   "long": "Dry needling, 1 or 2 muscles"
+  },
+  {
+   "code": "20561",
+   "short": "Dry needling (3+ muscles)",
+   "long": "Dry needling, 3 or more muscles"
+  },
+  {
+   "code": "97150",
+   "short": "Group session",
+   "long": "Therapy in a group"
+  },
+  {
+   "code": "97113",
+   "short": "Pool therapy",
+   "long": "Aquatic therapy with exercise, per 15 minutes"
+  },
+  {
+   "code": "99211",
+   "short": "Office visit (minimal)",
+   "long": "Office visit, minimal"
+  },
+  {
+   "code": "99212",
+   "short": "Office visit (simple)",
+   "long": "Office visit, straightforward"
+  },
+  {
+   "code": "99213",
+   "short": "Office visit (low)",
+   "long": "Office visit, low complexity"
+  },
+  {
+   "code": "99214",
+   "short": "Office visit (moderate)",
+   "long": "Office visit, moderate complexity"
+  }
+ ],
+ "payers": [
+  {
+   "name": "BCBS Minnesota",
+   "slug": "bcbs-minnesota",
+   "rows": 254112,
+   "npis": 1633,
+   "clinics": 195,
+   "codes": 39,
+   "last_updated": "2026-07-27",
+   "files": 14,
+   "networks": [
+    "Aware Network"
+   ]
+  },
+  {
+   "name": "HealthPartners",
+   "slug": "healthpartners",
+   "rows": 1282392,
+   "npis": 1538,
+   "clinics": 134,
+   "codes": 39,
+   "last_updated": "2026-10-01",
+   "files": 6,
+   "networks": [
+    "HealthPartners_Achieve-Large-Employer",
+    "HealthPartners_Achieve-Small-Employer+Peak",
+    "HealthPartners_Cornerstone",
+    "HealthPartners_HP-Select",
+    "HealthPartners_Open-Access+Simplica",
+    "HealthPartners_State-of-MN"
+   ]
+  },
+  {
+   "name": "UCare",
+   "slug": "ucare",
+   "rows": 235,
+   "npis": 23,
+   "clinics": 23,
+   "codes": 5,
+   "last_updated": "2026-09-16",
+   "files": 2,
+   "networks": []
+  }
+ ],
+ "excluded": [
+  {
+   "payer": "UnitedHealthcare",
+   "why": "NPIs appear in its files but none are linked to PT rate entries."
+  },
+  {
+   "payer": "Medica",
+   "why": "Files sit behind a HealthSparq portal with bot protection."
+  },
+  {
+   "payer": "Aetna",
+   "why": "HealthSparq portal; national file structure."
+  },
+  {
+   "payer": "Cigna",
+   "why": "CAPTCHA in front of the file list."
+  },
+  {
+   "payer": "Humana",
+   "why": "Bot protection and CAPTCHA."
+  },
+  {
+   "payer": "Medicare / Medicaid",
+   "why": "Published separately by CMS and DHS in other formats."
+  }
+ ],
+ "clinics_total": 278,
+ "nppes_providers": 4812,
+ "rollup": {
+  "tin-group": 1713,
+  "addr->org": 154,
+  "tin->org": 1989,
+  "org": 146,
+  "override": 1
+ }
+}
