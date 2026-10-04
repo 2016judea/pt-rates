@@ -1,0 +1,439 @@
+{
+ "061745397": {
+  "addr": "301 HIGHWAY 65 S",
+  "at_addr": 1,
+  "city": "MORA",
+  "members": 2,
+  "name": "WELIA HEALTH",
+  "npi": "1528031390",
+  "taxonomy": "General Acute Care Hospital, Critical Access",
+  "zip": "55051"
+ },
+ "200603998": {
+  "addr": "490 HIGHWAY 96 W",
+  "at_addr": 3,
+  "city": "SHOREVIEW",
+  "members": 5,
+  "name": "KIDS ABILITIES, INC",
+  "npi": "1023296068",
+  "taxonomy": "Speech-Language Pathologist,  ",
+  "zip": "55126"
+ },
+ "201613283": {
+  "addr": "15 8TH AVE N",
+  "at_addr": 6,
+  "city": "HOPKINS",
+  "members": 18,
+  "name": "HOPKINS HEALTH AND WELLNESS CENTER PA",
+  "npi": "1396932067",
+  "taxonomy": "Nurse Practitioner",
+  "zip": "55343"
+ },
+ "203724233": {
+  "addr": "6545 FLYING CLOUD DR",
+  "at_addr": 17,
+  "city": "EDEN PRAIRIE",
+  "members": 50,
+  "name": "INSTITUTE FOR ORTHOPEDICS & CHIROPRACTIC, PLLC",
+  "npi": "1710216858",
+  "taxonomy": "Chiropractor",
+  "zip": "55344"
+ },
+ "263455865": {
+  "addr": "261 RUTH ST N",
+  "at_addr": 1,
+  "city": "SAINT PAUL",
+  "members": 3,
+  "name": "BATTLE CREEK CHIROPRACTIC",
+  "npi": "1407190184",
+  "taxonomy": "Chiropractor",
+  "zip": "55119"
+ },
+ "270253438": null,
+ "363261413": {
+  "addr": "3915 GOLDEN VALLEY RD",
+  "at_addr": 4,
+  "city": "GOLDEN VALLEY",
+  "members": 22,
+  "name": "ALLINA HEALTH SYSTEM",
+  "npi": "1245579713",
+  "taxonomy": "Skilled Nursing Facility",
+  "zip": "55422"
+ },
+ "390808442": {
+  "addr": "3305 CENTRAL PARK VILLAGE DR",
+  "at_addr": 1,
+  "city": "EAGAN",
+  "members": 3,
+  "name": "FAIRVIEW CLINICS",
+  "npi": "1043402688",
+  "taxonomy": "Clinic/Center, Primary Care",
+  "zip": "55121"
+ },
+ "390884478": {
+  "addr": "2645 VIKINGS CIR",
+  "at_addr": 1,
+  "city": "EAGAN",
+  "members": 2,
+  "name": "HAUS SPORTS CHIROPRACTICS, LLC",
+  "npi": "1558851683",
+  "taxonomy": "Chiropractor",
+  "zip": "55121"
+ },
+ "390890676": {
+  "addr": "1500 MADISON AVE",
+  "at_addr": 2,
+  "city": "NEW RICHMOND",
+  "members": 3,
+  "name": "PIVOTAL HEALTH CHIROPRACTIC LLC",
+  "npi": "1164200721",
+  "taxonomy": "Clinic/Center",
+  "zip": "54017"
+ },
+ "390908320": null,
+ "391584408": {
+  "addr": "2705 ENLOE ST",
+  "at_addr": 1,
+  "city": "HUDSON",
+  "members": 2,
+  "name": "ITS OF WI",
+  "npi": "1801338652",
+  "taxonomy": "Speech-Language Pathologist,  ",
+  "zip": "54016"
+ },
+ "393820040": {
+  "addr": "2450 RIVERSIDE AVE",
+  "at_addr": 20,
+  "city": "MINNEAPOLIS",
+  "members": 344,
+  "name": "FAIRVIEW BETHESDA HOSPITAL",
+  "npi": "1275412561",
+  "taxonomy": "Internal Medicine",
+  "zip": "55454"
+ },
+ "410132080": null,
+ "410691275": {
+  "addr": "1600 MILLER TRUNK HWY",
+  "at_addr": 1,
+  "city": "DULUTH",
+  "members": 5,
+  "name": "ESSENTIA HEALTH SURGERY CENTERS-DULUTH LLC",
+  "npi": "1598417875",
+  "taxonomy": "Clinic/Center, Ambulatory Surgical",
+  "zip": "55811"
+ },
+ "410714079": {
+  "addr": "325 11TH AVE",
+  "at_addr": 2,
+  "city": "TWO HARBORS",
+  "members": 3,
+  "name": "BRIGHTWATER HEALTH DBA HUMAN DEVELOPMENT CENTER",
+  "npi": "1376663468",
+  "taxonomy": "Case Management",
+  "zip": "55616"
+ },
+ "410781858": {
+  "addr": "3333 UNIVERSITY AVE SE",
+  "at_addr": 3,
+  "city": "MINNEAPOLIS",
+  "members": 11,
+  "name": "FRASER CHILD AND FAMILY CENTER",
+  "npi": "1609922194",
+  "taxonomy": "Clinic/Center, Mental Health (Including Community Mental Health Center)",
+  "zip": "55414"
+ },
+ "410797853": {
+  "addr": "435 PHALEN BLVD",
+  "at_addr": 15,
+  "city": "SAINT PAUL",
+  "members": 37,
+  "name": "GILLETTE CHILDRENS SPECIALTY HEALTHCARE",
+  "npi": "1760541700",
+  "taxonomy": "Clinic/Center, Dental",
+  "zip": "55130"
+ },
+ "410834920": {
+  "addr": "6500 EXCELSIOR BLVD",
+  "at_addr": 30,
+  "city": "ST LOUIS PARK",
+  "members": 259,
+  "name": "PARK NICOLLET METHODIST HOSPITAL",
+  "npi": "1083622047",
+  "taxonomy": "Anesthesiology",
+  "zip": "55426"
+ },
+ "410883623": {
+  "addr": "530 E 2ND ST",
+  "at_addr": 1,
+  "city": "DULUTH",
+  "members": 4,
+  "name": "HANGER PROSTHETICS & ORTHOTICS EAST INC",
+  "npi": "1336967280",
+  "taxonomy": "Durable Medical Equipment & Medical Supplies",
+  "zip": "55805"
+ },
+ "410956618": {
+  "addr": "295 PHALEN BLVD",
+  "at_addr": 9,
+  "city": "SAINT PAUL",
+  "members": 28,
+  "name": "GROUP HEALTH, INC.",
+  "npi": "1063963577",
+  "taxonomy": "Durable Medical Equipment & Medical Supplies",
+  "zip": "55130"
+ },
+ "410985748": {
+  "addr": "825 S 8TH ST",
+  "at_addr": 1,
+  "city": "MINNEAPOLIS",
+  "members": 2,
+  "name": "GENOA HEALTHCARE OF MINNESOTA, LLC",
+  "npi": "1376501510",
+  "taxonomy": "Pharmacy",
+  "zip": "55404"
+ },
+ "411236623": {
+  "addr": "4100 MINNESOTA DR",
+  "at_addr": 1,
+  "city": "EDINA",
+  "members": 5,
+  "name": "INFINITE HEALTH COLLABORATIVE, PA",
+  "npi": "1821174657",
+  "taxonomy": "Durable Medical Equipment & Medical Supplies",
+  "zip": "55435"
+ },
+ "411526541": {
+  "addr": "2550 UNIVERSITY AVE W",
+  "at_addr": 2,
+  "city": "SAINT PAUL",
+  "members": 5,
+  "name": "ACUPUNCTURE HEALTH CENTER",
+  "npi": "1164824298",
+  "taxonomy": "Acupuncturist",
+  "zip": "55114"
+ },
+ "411590671": {
+  "addr": "1994 E RUM RIVER DR S",
+  "at_addr": 2,
+  "city": "CAMBRIDGE",
+  "members": 9,
+  "name": "HEALTH DIMENSIONS REHABILITATION INC",
+  "npi": "1184733032",
+  "taxonomy": "Clinic/Center, Rehabilitation",
+  "zip": "55008"
+ },
+ "411618385": {
+  "addr": "200 UNIVERSITY AVE E",
+  "at_addr": 1,
+  "city": "SAINT PAUL",
+  "members": 7,
+  "name": "GILLETTE CHILDREN'S SPECIALTY HEALTHCARE",
+  "npi": "1851450894",
+  "taxonomy": "Durable Medical Equipment & Medical Supplies",
+  "zip": "55101"
+ },
+ "411671062": null,
+ "411761760": {
+  "addr": "2450 RIVERSIDE AVE",
+  "at_addr": 2,
+  "city": "MINNEAPOLIS",
+  "members": 18,
+  "name": "FAIRVIEW BETHESDA HOSPITAL",
+  "npi": "1275412561",
+  "taxonomy": "Internal Medicine",
+  "zip": "55454"
+ },
+ "411781580": {
+  "addr": "2925 BUCKLEY WAY",
+  "at_addr": 1,
+  "city": "INVER GROVE HEIGHTS",
+  "members": 2,
+  "name": "THERAPY OPS, LLC",
+  "npi": "1013323559",
+  "taxonomy": "Physical Therapist",
+  "zip": "55076"
+ },
+ "411806657": {
+  "addr": "1301 33RD ST S",
+  "at_addr": 1,
+  "city": "SAINT CLOUD",
+  "members": 6,
+  "name": "CENTRACARE CLINIC",
+  "npi": "1427794171",
+  "taxonomy": "Clinic/Center, Occupational Medicine",
+  "zip": "56301"
+ },
+ "411814182": {
+  "addr": "2104 NORTHDALE BLVD NW",
+  "at_addr": 2,
+  "city": "COON RAPIDS",
+  "members": 4,
+  "name": "NOVACARE OUTPATIENT REHABILITATION EAST INC",
+  "npi": "1700085503",
+  "taxonomy": "Clinic/Center, Rehabilitation",
+  "zip": "55433"
+ },
+ "411814334": {
+  "addr": "2104 NORTHDALE BLVD NW",
+  "at_addr": 2,
+  "city": "COON RAPIDS",
+  "members": 12,
+  "name": "NOVACARE OUTPATIENT REHABILITATION EAST INC",
+  "npi": "1700085503",
+  "taxonomy": "Clinic/Center, Rehabilitation",
+  "zip": "55433"
+ },
+ "411843943": {
+  "addr": "2450 RIVERSIDE AVE",
+  "at_addr": 6,
+  "city": "MINNEAPOLIS",
+  "members": 20,
+  "name": "FAIRVIEW BETHESDA HOSPITAL",
+  "npi": "1275412561",
+  "taxonomy": "Internal Medicine",
+  "zip": "55454"
+ },
+ "420680467": {
+  "addr": "2901 CEDAR ST",
+  "at_addr": 1,
+  "city": "NORWALK",
+  "members": 2,
+  "name": "FOX REHAB OT IA LLC",
+  "npi": "1073274585",
+  "taxonomy": "Occupational Therapist",
+  "zip": "50211"
+ },
+ "421707837": {
+  "addr": "790 W 66TH ST",
+  "at_addr": 9,
+  "city": "RICHFIELD",
+  "members": 9,
+  "name": "HENNEPIN HEALTHCARE SYSTEM INC",
+  "npi": "1538614904",
+  "taxonomy": "Pharmacy, Compounding Pharmacy",
+  "zip": "55423"
+ },
+ "432036236": {
+  "addr": "1891 STATION PKWY NW",
+  "at_addr": 3,
+  "city": "ANDOVER",
+  "members": 9,
+  "name": "FAMILY SPEECH & THERAPY SERVICES, LLC",
+  "npi": "1235285966",
+  "taxonomy": "Occupational Therapist",
+  "zip": "55304"
+ },
+ "450310462": {
+  "addr": "1250 W BROADWAY AVE",
+  "at_addr": 1,
+  "city": "MINNEAPOLIS",
+  "members": 2,
+  "name": "SPECIAL SCHOOL DISTRICT #1",
+  "npi": "1619053378",
+  "taxonomy": "Local Education Agency (LEA)",
+  "zip": "55411"
+ },
+ "455532183": null,
+ "463406620": {
+  "addr": "2321 STOUT RD",
+  "at_addr": 1,
+  "city": "MENOMONIE",
+  "members": 2,
+  "name": "MAYO CLINIC HEALTH SYSTEM-NORTHWEST WISCONSIN REGION, INC.",
+  "npi": "1154372944",
+  "taxonomy": "General Acute Care Hospital, Critical Access",
+  "zip": "54751"
+ },
+ "465444821": {
+  "addr": "2450 RIVERSIDE AVE",
+  "at_addr": 6,
+  "city": "MINNEAPOLIS",
+  "members": 19,
+  "name": "FAIRVIEW BETHESDA HOSPITAL",
+  "npi": "1275412561",
+  "taxonomy": "Internal Medicine",
+  "zip": "55454"
+ },
+ "465635489": {
+  "addr": "7241 UNIVERSITY AVE NE",
+  "at_addr": 1,
+  "city": "FRIDLEY",
+  "members": 2,
+  "name": "METRO THERAPY SPECIAL CHILDREN'S CLINIC",
+  "npi": "1568873388",
+  "taxonomy": "Speech-Language Pathologist,  ",
+  "zip": "55432"
+ },
+ "743111718": {
+  "addr": "5050 TIMBER PKWY S",
+  "at_addr": 1,
+  "city": "FARGO",
+  "members": 2,
+  "name": "IGNITE CHIROPRACTIC, PROFESSIONAL CORPORATION",
+  "npi": "1669829503",
+  "taxonomy": "Chiropractor",
+  "zip": "58104"
+ },
+ "815460152": {
+  "addr": "830 SUNRISE DR",
+  "at_addr": 2,
+  "city": "SAINT PETER",
+  "members": 3,
+  "name": "GO THERAPY INC",
+  "npi": "1841730876",
+  "taxonomy": "Occupational Therapist",
+  "zip": "56082"
+ },
+ "822818948": {
+  "addr": "2701 W SUPERIOR ST",
+  "at_addr": 1,
+  "city": "DULUTH",
+  "members": 2,
+  "name": "IN MOTION THERAPY, INC",
+  "npi": "1972861417",
+  "taxonomy": "Clinic/Center, Physical Therapy",
+  "zip": "55806"
+ },
+ "823175998": null,
+ "830452873": {
+  "addr": "6776 LAKE DR",
+  "at_addr": 3,
+  "city": "LINO LAKES",
+  "members": 12,
+  "name": "ADVANCE OCCUPATIONAL THERAPY, LLC",
+  "npi": "1174730899",
+  "taxonomy": "Occupational Therapist",
+  "zip": "55014"
+ },
+ "841715908": {
+  "addr": "1095 HIGHWAY 15 S",
+  "at_addr": 5,
+  "city": "HUTCHINSON",
+  "members": 5,
+  "name": "HUTCHINSON AREA HEALTH CARE",
+  "npi": "1194899674",
+  "taxonomy": "Psychiatric Unit",
+  "zip": "55350"
+ },
+ "841787423": {
+  "addr": "1401 E 100TH ST",
+  "at_addr": 3,
+  "city": "BLOOMINGTON",
+  "members": 10,
+  "name": "MARTIN LM LLC",
+  "npi": "1689867707",
+  "taxonomy": "Clinic/Center, Adult Day Care",
+  "zip": "55425"
+ },
+ "870692497": {
+  "addr": "7235 OHMS LN",
+  "at_addr": 2,
+  "city": "EDINA",
+  "members": 2,
+  "name": "ANDREW J WILL MD PA",
+  "npi": "1215003066",
+  "taxonomy": "Physical Medicine & Rehabilitation",
+  "zip": "55439"
+ },
+ "900533139": null
+}

@@ -215,12 +215,21 @@ def main():
     ap.add_argument("payer", choices=["hp", "bcbs"])
     ap.add_argument("--only", type=int, default=0)
     ap.add_argument("--index", default=BCBS_INDEX_DEFAULT)
+    ap.add_argument("--db", help="write to this DuckDB instead of data/rates.duckdb (DuckDB allows one writer; "
+                                 "use a side file to run two payers at once, then precompute --extra-db it)")
+    ap.add_argument("--nppes-db", help="read target NPIs from this DuckDB (a copy, when the main one is locked)")
     a = ap.parse_args()
     TMP.mkdir(parents=True, exist_ok=True)
-    TARGET = get_target_npis() or set()
+    if a.nppes_db:
+        import duckdb
+        c = duckdb.connect(a.nppes_db, read_only=True)
+        TARGET = {r[0] for r in c.execute("SELECT npi FROM nppes_providers").fetchall()}
+        c.close()
+    else:
+        TARGET = get_target_npis() or set()
     cpts = load_cpt_codes()
     log(f"{len(TARGET)} target NPIs, {len(cpts)} codes")
-    db = RatesDatabase()
+    db = RatesDatabase(Path(a.db)) if a.db else RatesDatabase()
     total = run_hp(db, cpts, a.only) if a.payer == "hp" else run_bcbs(db, cpts, a.only, a.index)
     log(f"done: {total:,} rates added; total rows {db.get_rate_stats()['total_rates']:,}")
     db.close()

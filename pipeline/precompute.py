@@ -79,6 +79,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--db", default=str(PIPE / "data" / "rates.duckdb"))
     ap.add_argument("--pipe", default=str(PIPE))
+    ap.add_argument("--extra-db", action="append", default=[], help="more DuckDBs whose `rates` are unioned in (a side file written by ingest_stream --db)")
     args = ap.parse_args()
     pipe = Path(args.pipe)
 
@@ -86,10 +87,19 @@ def main():
     codes = list(dict.fromkeys(codes_cfg))  # config order, duplicates dropped
     gloss = json.loads((HERE / "cpt_gloss.json").read_text())
     overrides = json.loads((HERE / "npi_groups.json").read_text()) if (HERE / "npi_groups.json").exists() else {}
+    tin_names = json.loads((HERE / "tin_names.json").read_text()) if (HERE / "tin_names.json").exists() else {}
 
     con = duckdb.connect(args.db, read_only=True)
+    rates_src = "rates"
+    if args.extra_db:
+        parts = ["SELECT * FROM rates"]
+        for i, extra in enumerate(args.extra_db):
+            con.execute(f"ATTACH '{extra}' AS x{i} (READ_ONLY)")
+            parts.append(f"SELECT * FROM x{i}.rates")
+        con.execute("CREATE TEMP VIEW all_rates AS " + " UNION ALL ".join(parts))
+        rates_src = "all_rates"
 
-    types = con.execute("SELECT negotiated_type, billing_class, COUNT(*) FROM rates GROUP BY 1,2 ORDER BY 3 DESC").fetchall()
+    types = con.execute(f"SELECT negotiated_type, billing_class, COUNT(*) FROM {rates_src} GROUP BY 1,2 ORDER BY 3 DESC").fetchall()
     print("negotiated_type x billing_class:", types)
 
     zips = tuple(json.loads((pipe / "data" / "user_config.json").read_text()).get("zip_prefixes", []))
@@ -102,7 +112,7 @@ def main():
 
     rows = [r for r in con.execute(f"""
         SELECT payer_name, TRIM(npi), billing_code, negotiated_rate, tin, last_updated, file_source
-        FROM rates
+        FROM {rates_src}
         WHERE billing_code IN ({",".join("?" * len(codes))})
           AND lower(coalesce(negotiated_type,'negotiated')) IN {KEEP_TYPES}
           AND (billing_class IS NULL OR billing_class = '' OR lower(billing_class) IN {KEEP_CLASS})
@@ -131,6 +141,7 @@ def main():
     rate_rows_per_npi = Counter(r[1] for r in rows)
 
     clinic_of = {}
+    tin_of_clinic = {}
     how = Counter()
     for npi in {r[1] for r in rows}:
         p = prov.get(npi)
@@ -144,7 +155,7 @@ def main():
         if p and p["addr"] and orgs_by_addr.get((p["addr"], p["zip"])):
             clinic_of[npi] = pick_org(orgs_by_addr[(p["addr"], p["zip"])]); how["addr->org"] += 1; continue
         if t:
-            clinic_of[npi] = "t" + hashlib.sha1(t.encode()).hexdigest()[:10]; how["tin-group"] += 1; continue
+            clinic_of[npi] = "t" + hashlib.sha1(t.encode()).hexdigest()[:10]; tin_of_clinic[clinic_of[npi]] = t; how["tin-group"] += 1; continue
         clinic_of[npi] = npi; how["solo"] += 1
     print("roll-up:", dict(how))
 
@@ -175,7 +186,13 @@ def main():
             cities = Counter(prov[n]["city"] for n in ms if n in prov)
             city = cities.most_common(1)[0][0] if cities else ""
             z = Counter(prov[n]["zip"] for n in ms if n in prov).most_common(1)[0][0] if cities else ""
-            kind, name = "group", f"Group of {len(ms)} therapists"
+            named = tin_names.get(tin_of_clinic.get(c, ""))
+            # trust the address match only when it covers the group: half its members, or 3+ of them
+            if named and not (named["at_addr"] >= 3 or named["at_addr"] * 2 >= named["members"]):
+                named = None
+            kind, name = "group", (named["name"] if named else f"Group of {len(ms)} therapists")
+            if named:
+                name = titlecase(name)
         else:
             kind, name, city, z = "solo", titlecase(p["name"]) + ", PT" if p else c, (p or {}).get("city", ""), (p or {}).get("zip", "")
         payers = sorted({pp for (pp, cc, kk) in clinic_rate if cc == c})
