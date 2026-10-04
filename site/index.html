@@ -217,7 +217,7 @@ function renderMenu() {
   if (!list.length) { menu.innerHTML = `<div class="none">No PT clinic in the Twin Cities files matches "${q.value.trim()}". Try part of the name, or the clinic NPI.</div>`; }
   list.forEach((c, i) => {
     const b = document.createElement('button'); b.type = 'button'; b.role = 'option';
-    b.innerHTML = `<span style="color:var(--ink);font-size:15px">${esc(c.name)}</span><span>${esc(c.city)}${c.kind === 'org' ? ' · ' + c.id : ''}</span>`;
+    b.innerHTML = `<span style="color:var(--ink);font-size:15px">${esc(c.name)}</span><span>${esc(c.city)}${c.kind === 'org' ? ' · ' + c.id : c.kind === 'group' ? ' · ' + c.n + ' therapists, one tax id' : ''}</span>`;
     b.setAttribute('aria-selected', i === state.active);
     b.onclick = () => selectClinic(c, true);
     menu.appendChild(b);

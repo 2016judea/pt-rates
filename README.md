@@ -54,6 +54,17 @@ Rules the numbers obey:
   seen for that clinic's NPIs (the same fee schedule repeats across networks).
 - **A market median needs at least 3 clinics**, otherwise the code is not shown.
 - **Only `negotiated` / `fee schedule` professional rates** are kept.
+- **Base prices only.** Each NPI/code carries the base rate plus modifier
+  variants (`52`/`53` reduced service, `CO`/`CQ` assistant at 85%). Maverick's
+  97012 under BCBS read as eight "rates" from $9.73 to $22.88 until the
+  modifiers were separated. Modifier prices are tagged at ingest and dropped.
+- **BCBS = the Aware network** (its broad commercial PPO, file group
+  `000000011`, 31,950 plans cite it). The other 13 BCBS file groups are custom
+  or narrow networks (Allina, PEIP, High Value, ...); they are in the DuckDB,
+  tagged by network, and not on the page.
+- **UCare's PT procedure codes are published as a percentage of charges**
+  (65%, institutional), not dollars, so only its dollar-priced codes (97014 and
+  the office-visit codes) appear. UCare is in, but it answers little.
 - **Every number on the page comes from `site/data/`.** Nothing is typed.
 
 ## Data sources
