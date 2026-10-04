@@ -37,7 +37,7 @@ ROOT = HERE.parent
 OUT = ROOT / "site" / "data"
 PIPE = Path.home() / "Desktop" / "pt-rates-data"
 
-DEFAULT_CLINIC = "1073185393"  # Maverick Physiotherapy, Saint Paul
+DEFAULT_CLINIC = "1407809494"  # Therapy Partners, Inc., Saint Paul: independent, in all three payers, a mixed verdict
 
 # What the pipeline cannot ingest, and why. Static because it describes the
 # absence of data; the README repeats it.

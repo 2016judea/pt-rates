@@ -14,8 +14,9 @@ code-by-code table underneath for the few who scroll.
 
 Mason Richlen, DPT, co-owner of [Maverick Physiotherapy](https://www.google.com/search?q=Maverick+Physiotherapy+Saint+Paul)
 (155 Eaton St, Saint Paul, inside Los Campeones Gym; org NPI 1073185393). A
-three-therapist, direct-access clinic. The page opens on Maverick with nothing
-typed; the search box is for the next clinic.
+three-therapist, direct-access clinic. The page opens on Therapy Partners, Inc.
+(Saint Paul; a large independent practice that appears in all three payers' files,
+so every tab has an answer) with nothing typed; the search box is for any clinic.
 
 The question this answers was first asked on 25 Jan 2026: *how do people find
 out what a payer reimburses under Transparency in Coverage?* The answer became
