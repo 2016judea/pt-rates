@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PT Rates · Twin Cities</title>
+<meta name="description" content="Where a Twin Cities physical therapy clinic's negotiated insurance rates sit against the other local clinics, per payer, per billing code. From the payers' own Transparency in Coverage files.">
+<meta name="color-scheme" content="light dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230FA3A3'/%3E%3Cpath d='M8 20h4v-6H8zm6 0h4V9h-4zm6 0h4v-9h-4z' fill='%23EAFBF9'/%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#EEF9F8; --surface:#FFFFFF; --surface-2:#DDF4F1; --ink:#07302F; --ink-2:#3C6765; --ink-3:#6E9896;
+  --line:#BFE4E0; --line-2:#9ED6D0;
+  --aqua:#0FA3A3; --aqua-deep:#067474; --aqua-ink:#044F4F; --aqua-wash:#CBF1EC; --aqua-glow:#7EE0D8;
+  --below:#C8503B; --below-wash:#FBE6E1; --above:#067474; --above-wash:#CBF1EC;
+  --radius:14px; --shadow:0 1px 2px rgba(7,48,47,.06),0 8px 24px -12px rgba(7,48,47,.18);
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+  --bg:#05191A; --surface:#0A2525; --surface-2:#0E3233; --ink:#E4FAF7; --ink-2:#9ECBC6; --ink-3:#6E9E9A;
+  --line:#164544; --line-2:#1F5B59;
+  --aqua:#2FD6CF; --aqua-deep:#5BE3DC; --aqua-ink:#A8F3EE; --aqua-wash:#0E3A3A; --aqua-glow:#1D8D88;
+  --below:#F28B76; --below-wash:#3A1A14; --above:#5BE3DC; --above-wash:#0E3A3A;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+}}
+:root[data-theme="dark"]{
+  --bg:#05191A; --surface:#0A2525; --surface-2:#0E3233; --ink:#E4FAF7; --ink-2:#9ECBC6; --ink-3:#6E9E9A;
+  --line:#164544; --line-2:#1F5B59;
+  --aqua:#2FD6CF; --aqua-deep:#5BE3DC; --aqua-ink:#A8F3EE; --aqua-wash:#0E3A3A; --aqua-glow:#1D8D88;
+  --below:#F28B76; --below-wash:#3A1A14; --above:#5BE3DC; --above-wash:#0E3A3A;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:500 16px/1.45 Manrope,system-ui,-apple-system,"Segoe UI",sans-serif;
+  background-image:radial-gradient(1200px 500px at 50% -200px,var(--aqua-wash),transparent 70%);min-height:100dvh}
+a{color:var(--aqua-deep)}
+.wrap{max-width:720px;margin:0 auto;padding:0 16px 64px}
+header{display:flex;align-items:center;justify-content:space-between;padding:18px 0 6px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.01em;color:var(--ink)}
+.brand i{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--aqua),var(--aqua-deep));display:inline-grid;place-items:center}
+.brand i svg{width:16px;height:16px;fill:#EAFBF9}
+.brand small{display:block;font-size:12px;font-weight:600;color:var(--ink-3);letter-spacing:0}
+.theme{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--ink-2);border-radius:999px;padding:6px 10px;font:600 12px Manrope,system-ui;cursor:pointer}
+
+/* search */
+.search{position:relative;margin:14px 0 10px}
+.search input{width:100%;padding:16px 46px 16px 18px;border-radius:var(--radius);border:1.5px solid var(--line-2);background:var(--surface);color:var(--ink);
+  font:700 17px Manrope,system-ui;box-shadow:var(--shadow);outline:none}
+.search input::placeholder{color:var(--ink-3);font-weight:600}
+.search input:focus{border-color:var(--aqua);box-shadow:0 0 0 4px var(--aqua-wash),var(--shadow)}
+.search .clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);border:0;background:var(--surface-2);color:var(--ink-2);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:16px;display:none}
+.search.has .clear{display:block}
+.menu{position:absolute;left:0;right:0;top:calc(100% + 6px);background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);z-index:5;max-height:46dvh;overflow:auto;display:none}
+.menu.open{display:block}
+.menu button{display:flex;width:100%;justify-content:space-between;gap:12px;align-items:baseline;text-align:left;border:0;background:none;padding:12px 16px;font:600 15px Manrope,system-ui;color:var(--ink);cursor:pointer;border-bottom:1px solid var(--line)}
+.menu button:last-child{border-bottom:0}
+.menu button:hover,.menu button[aria-selected="true"]{background:var(--aqua-wash)}
+.menu button span{color:var(--ink-3);font-size:12px;white-space:nowrap}
+.menu .none{padding:14px 16px;color:var(--ink-2);font-size:14px}
+.hint{font-size:13px;color:var(--ink-3);margin:0 2px 18px}
+
+/* payer tabs */
+.tabs{display:flex;gap:6px;padding:4px;background:var(--surface-2);border-radius:999px;margin:0 0 16px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{flex:1 0 auto;border:0;border-radius:999px;padding:10px 14px;background:transparent;color:var(--ink-2);font:700 14px Manrope,system-ui;cursor:pointer;white-space:nowrap}
+.tabs button[aria-selected="true"]{background:var(--surface);color:var(--aqua-ink);box-shadow:var(--shadow)}
+.tabs button:disabled{opacity:.45;cursor:not-allowed}
+
+/* verdict */
+.verdict{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:22px 20px 18px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.verdict:before{content:"";position:absolute;inset:0 auto 0 0;width:6px;background:linear-gradient(var(--aqua),var(--aqua-deep))}
+.verdict .who{font-size:13px;font-weight:700;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em;margin:0 0 6px}
+.verdict h1{font-size:clamp(24px,6.2vw,34px);line-height:1.12;letter-spacing:-.02em;margin:0;font-weight:800}
+.verdict h1 b{color:var(--below)}
+.verdict h1 b.up{color:var(--above)}
+.verdict p{margin:12px 0 0;color:var(--ink-2);font-size:14px}
+.verdict .stats{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.stat{flex:1 1 140px;background:var(--surface-2);border-radius:12px;padding:10px 12px}
+.stat b{display:block;font-size:22px;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.stat span{font-size:12px;color:var(--ink-2);font-weight:600}
+
+/* rows */
+h2{font-size:14px;font-weight:800;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em;margin:28px 2px 10px}
+.rows{display:flex;flex-direction:column;gap:8px}
+.row{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px 12px}
+.row .top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.row .name{font-weight:800;font-size:16px;letter-spacing:-.01em}
+.row .code{font-size:12px;color:var(--ink-3);font-weight:600;margin-left:6px;white-space:nowrap}
+.chip{font-size:13px;font-weight:800;padding:3px 9px;border-radius:999px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.chip.below{background:var(--below-wash);color:var(--below)}
+.chip.above{background:var(--above-wash);color:var(--above)}
+.chip.even{background:var(--surface-2);color:var(--ink-2)}
+.row .nums{display:flex;gap:14px;font-size:14px;color:var(--ink-2);margin-top:6px;font-variant-numeric:tabular-nums;flex-wrap:wrap}
+.row .nums b{color:var(--ink);font-weight:800}
+.row .nums .n{margin-left:auto;color:var(--ink-3);font-size:12px}
+.bar{display:block;width:100%;height:22px;margin-top:6px}
+.bar .track{stroke:var(--line-2);stroke-width:2}
+.bar .iqr{fill:var(--aqua-wash);stroke:var(--aqua-glow);stroke-width:1}
+.bar .med{stroke:var(--aqua-deep);stroke-width:2}
+.bar .you{fill:var(--below);stroke:var(--surface);stroke-width:2}
+.bar .you.up{fill:var(--above)}
+.row.muted{opacity:.6}
+.legend{font-size:12px;color:var(--ink-3);margin:8px 2px 0;display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:-2px;margin-right:4px}
+.legend i.dot{background:var(--below)} .legend i.band{background:var(--aqua-wash);border:1px solid var(--aqua-glow);border-radius:3px} .legend i.line{width:2px;height:12px;background:var(--aqua-deep);border-radius:0}
+
+/* market table */
+table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;font-variant-numeric:tabular-nums}
+th,td{padding:10px 12px;text-align:right;border-bottom:1px solid var(--line);font-size:14px}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);background:var(--surface-2)}
+th:first-child,td:first-child{text-align:left}
+tr:last-child td{border-bottom:0}
+td.name b{display:block;font-weight:800} td.name span{font-size:12px;color:var(--ink-3)}
+td.med{font-weight:800}
+td .rng{display:block;font-size:11px;color:var(--ink-3)}
+.tbl-wrap{overflow-x:auto;border-radius:var(--radius)}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;font-size:14px;color:var(--ink-2)}
+.card ul{margin:8px 0 0;padding-left:18px} .card li{margin:4px 0}
+.empty{padding:28px 20px;text-align:center;color:var(--ink-2);background:var(--surface);border:1px dashed var(--line-2);border-radius:var(--radius)}
+footer{margin-top:40px;font-size:13px;color:var(--ink-3);line-height:1.6}
+footer p{margin:6px 0}
+.hidden{display:none!important}
+@media (min-width:900px){
+  .wrap{max-width:860px}
+  .verdict{padding:30px 32px 26px}
+  .row{display:grid;grid-template-columns:1.2fr 1fr 1.4fr;align-items:center;column-gap:20px;padding:12px 18px}
+  .row .top{grid-column:1} .row .nums{grid-column:2;margin-top:0} .row .bar{grid-column:3;margin-top:0}
+  .row .nums .n{margin-left:0}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="brand"><i><svg viewBox="0 0 32 32"><path d="M6 24h5V13H6zm8 0h5V6h-5zm8 0h5v-8h-5z"/></svg></i>
+    <div>PT Rates<small>Twin Cities · what insurers pay each clinic</small></div></div>
+  <button class="theme" id="theme" type="button" aria-label="Switch light or dark">Dark</button>
+</header>
+
+<div class="search" id="search">
+  <input id="q" type="search" autocomplete="off" spellcheck="false" placeholder="Your clinic name or NPI" aria-label="Clinic name or NPI" aria-expanded="false" aria-controls="menu" role="combobox">
+  <button class="clear" id="clear" type="button" aria-label="Clear">×</button>
+  <div class="menu" id="menu" role="listbox"></div>
+</div>
+<p class="hint" id="hint"></p>
+
+<div id="clinicView" class="hidden">
+  <div class="tabs" id="tabs" role="tablist"></div>
+  <section class="verdict" id="verdict" aria-live="polite"></section>
+  <h2 id="rowsHead">Code by code</h2>
+  <div class="rows" id="rows"></div>
+  <div class="legend"><span><i class="dot"></i>this clinic</span><span><i class="line"></i>market median</span><span><i class="band"></i>middle half of clinics</span><span>line = lowest to highest</span></div>
+</div>
+
+<div id="marketView" class="hidden">
+  <div class="tabs" id="mtabs" role="tablist"></div>
+  <section class="verdict" id="mverdict"></section>
+  <h2>Market median by code</h2>
+  <div class="tbl-wrap"><table id="mtable"></table></div>
+</div>
+
+<h2>Where this comes from</h2>
+<div class="card" id="sources"></div>
+
+<footer>
+  <p>Rates are the negotiated amounts each payer publishes under the federal Transparency in Coverage rule, for physical-therapy billing codes, for PT providers whose NPPES practice address is in the Twin Cities zip areas listed above. Individual therapists are rolled up to their clinic before any median is taken.</p>
+  <p>A clinic that is not here either has no rate in these payers' files or is not in the NPPES PT list for these zips. Nothing here is advice; it is the payers' own numbers, side by side.</p>
+  <p>Open source: <a href="https://github.com/2016judea/pt-rates">github.com/2016judea/pt-rates</a> · pipeline: <a href="https://github.com/2016judea/Physical-Therapy-Market-Analysis">Physical-Therapy-Market-Analysis</a></p>
+</footer>
+</div>
+
+<script>
+(() => {
+const $ = id => document.getElementById(id);
+const fmt = n => '$' + Number(n).toFixed(2);
+const pct = (a, b) => Math.round((a - b) / b * 100);
+const state = { meta: null, clinics: [], payers: {}, clinic: null, payer: null, active: -1 };
+
+// theme
+const root = document.documentElement;
+try { const t = localStorage.getItem('theme'); if (t) root.dataset.theme = t; } catch (e) {}
+const isDark = () => root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+const paintTheme = () => { $('theme').textContent = isDark() ? 'Light' : 'Dark'; };
+$('theme').onclick = () => { root.dataset.theme = isDark() ? 'light' : 'dark'; try { localStorage.setItem('theme', root.dataset.theme); } catch (e) {} paintTheme(); };
+paintTheme();
+
+async function load() {
+  const [meta, clinics] = await Promise.all([fetch('data/meta.json').then(r => r.json()), fetch('data/clinics.json').then(r => r.json())]);
+  state.meta = meta; state.clinics = clinics;
+  const inZips = meta.zip_prefixes.map(z => z + 'xx').join(', ');
+  $('hint').textContent = `${clinics.length} PT clinics in zips ${inZips}. Type a name, or leave it blank for the whole market.`;
+  renderSources();
+  const want = new URLSearchParams(location.search).get('clinic') || meta.default_clinic;
+  const c = clinics.find(x => x.id === want);
+  if (c) selectClinic(c, false); else showMarket();
+}
+const payerFile = slug => state.payers[slug] || (state.payers[slug] = fetch(`data/payers/${slug}.json`).then(r => r.json()));
+
+// ---- search -------------------------------------------------------------
+const q = $('q'), menu = $('menu'), search = $('search');
+function matches(text) {
+  const t = text.trim().toLowerCase();
+  if (!t) return [];
+  if (/^\d{4,}$/.test(t)) return state.clinics.filter(c => c.id.startsWith(t) || c.npis.some(n => n.startsWith(t))).slice(0, 12);
+  const words = t.split(/\s+/);
+  return state.clinics.filter(c => { const h = (c.name + ' ' + c.city).toLowerCase(); return words.every(w => h.includes(w)); })
+    .sort((a, b) => a.name.toLowerCase().indexOf(words[0]) - b.name.toLowerCase().indexOf(words[0])).slice(0, 12);
+}
+function renderMenu() {
+  const list = matches(q.value);
+  menu.innerHTML = '';
+  if (!q.value.trim()) { closeMenu(); return; }
+  if (!list.length) { menu.innerHTML = `<div class="none">No PT clinic in the Twin Cities files matches "${q.value.trim()}". Try part of the name, or the clinic NPI.</div>`; }
+  list.forEach((c, i) => {
+    const b = document.createElement('button'); b.type = 'button'; b.role = 'option';
+    b.innerHTML = `<span style="color:var(--ink);font-size:15px">${esc(c.name)}</span><span>${esc(c.city)}${c.kind === 'org' ? ' · ' + c.id : ''}</span>`;
+    b.setAttribute('aria-selected', i === state.active);
+    b.onclick = () => selectClinic(c, true);
+    menu.appendChild(b);
+  });
+  menu.classList.add('open'); q.setAttribute('aria-expanded', 'true');
+}
+const closeMenu = () => { menu.classList.remove('open'); q.setAttribute('aria-expanded', 'false'); state.active = -1; };
+q.addEventListener('input', () => { state.active = -1; search.classList.toggle('has', !!q.value); renderMenu(); if (!q.value.trim()) showMarket(); });
+q.addEventListener('focus', () => { if (q.value.trim()) renderMenu(); });
+q.addEventListener('keydown', e => {
+  const opts = [...menu.querySelectorAll('button')];
+  if (e.key === 'ArrowDown') { e.preventDefault(); state.active = Math.min(opts.length - 1, state.active + 1); opts.forEach((o, i) => o.setAttribute('aria-selected', i === state.active)); opts[state.active]?.scrollIntoView({ block: 'nearest' }); }
+  else if (e.key === 'ArrowUp') { e.preventDefault(); state.active = Math.max(0, state.active - 1); opts.forEach((o, i) => o.setAttribute('aria-selected', i === state.active)); }
+  else if (e.key === 'Enter') { e.preventDefault(); (opts[state.active] || opts[0])?.click(); }
+  else if (e.key === 'Escape') closeMenu();
+});
+document.addEventListener('click', e => { if (!search.contains(e.target)) closeMenu(); });
+$('clear').onclick = () => { q.value = ''; search.classList.remove('has'); closeMenu(); showMarket(); q.focus(); };
+
+// ---- clinic view --------------------------------------------------------
+async function selectClinic(c, push) {
+  state.clinic = c; q.value = c.name; search.classList.add('has'); closeMenu(); q.blur();
+  if (push) history.replaceState(null, '', '?clinic=' + c.id);
+  state.payer = c.payers.includes(state.payer) ? state.payer : c.payers[0];
+  $('marketView').classList.add('hidden'); $('clinicView').classList.remove('hidden');
+  renderTabs($('tabs'), state.meta.payers.map(p => p.name), state.payer, c.payers, async name => { state.payer = name; await renderClinic(); });
+  await renderClinic();
+}
+function renderTabs(el, names, selected, enabled, onpick) {
+  el.innerHTML = '';
+  names.forEach(n => {
+    const b = document.createElement('button'); b.type = 'button'; b.role = 'tab'; b.textContent = n;
+    b.setAttribute('aria-selected', n === selected);
+    b.disabled = enabled && !enabled.includes(n);
+    if (b.disabled) b.title = 'No rate for this clinic in this payer\'s file';
+    b.onclick = () => { if (!b.disabled) { [...el.children].forEach(x => x.setAttribute('aria-selected', x === b)); onpick(n); } };
+    el.appendChild(b);
+  });
+}
+async function renderClinic() {
+  const c = state.clinic, pm = state.meta.payers.find(p => p.name === state.payer);
+  const data = await payerFile(pm.slug);
+  const mine = data.clinics[c.id] || {};
+  const codes = state.meta.codes.filter(k => mine[k.code] != null && data.market[k.code]);
+  const below = codes.filter(k => mine[k.code] < data.market[k.code].median);
+  const above = codes.filter(k => mine[k.code] > data.market[k.code].median);
+  const v = $('verdict');
+  const payer = esc(pm.name), who = esc(c.name);
+  let h;
+  if (!codes.length) h = `<h1>No ${payer} rate on file for ${who} on a code with enough clinics to compare.</h1>`;
+  else if (below.length === 0) h = `<h1>${who} is paid <b class="up">at or above the market median on all ${codes.length} codes</b> with ${payer}.</h1>`;
+  else h = `<h1>${who} is paid <b>below the market median on ${below.length} of ${codes.length} codes</b> with ${payer}.</h1>`;
+  const gaps = below.map(k => pct(mine[k.code], data.market[k.code].median));
+  const worst = below.length ? below.reduce((a, k) => pct(mine[k.code], data.market[k.code].median) < pct(mine[a.code], data.market[a.code].median) ? k : a) : null;
+  const avgGap = gaps.length ? Math.round(gaps.reduce((a, b) => a + b, 0) / gaps.length) : 0;
+  const nMarket = Math.max(0, ...codes.map(k => data.market[k.code].n));
+  v.innerHTML = `<p class="who">${esc(c.city || 'Twin Cities')}${c.kind === 'org' ? ' · NPI ' + c.id : ''}${c.n > 1 ? ' · ' + c.n + ' therapists rolled up' : ''}</p>${h}
+    <p>Market = the other Twin Cities PT clinics with a ${payer} rate for the same code (up to ${nMarket}). ${payer} file dated ${pm.last_updated || 'n/a'}.</p>
+    ${codes.length ? `<div class="stats">
+      <div class="stat"><b>${below.length}</b><span>codes below median</span></div>
+      <div class="stat"><b>${above.length}</b><span>codes above median</span></div>
+      ${worst ? `<div class="stat"><b>${pct(mine[worst.code], data.market[worst.code].median)}%</b><span>biggest gap: ${esc(worst.short)}</span></div>` : `<div class="stat"><b>—</b><span>no code below</span></div>`}
+    </div>` : ''}`;
+  const rows = $('rows'); rows.innerHTML = '';
+  $('rowsHead').textContent = codes.length ? `Code by code · ${payer}` : 'Codes';
+  const ordered = [...codes].sort((a, b) => pct(mine[a.code], data.market[a.code].median) - pct(mine[b.code], data.market[b.code].median));
+  for (const k of ordered) {
+    const m = data.market[k.code], you = mine[k.code], d = pct(you, m.median);
+    const cls = d < 0 ? 'below' : d > 0 ? 'above' : 'even';
+    const label = d < 0 ? `${d}% under` : d > 0 ? `+${d}% over` : 'at median';
+    const el = document.createElement('div'); el.className = 'row';
+    el.innerHTML = `<div class="top"><div><span class="name">${esc(k.short)}</span><span class="code" title="${esc(k.long)}">CPT ${k.code}</span></div><span class="chip ${cls}">${label}</span></div>
+      <div class="nums"><span>You <b>${fmt(you)}</b></span><span>Median <b>${fmt(m.median)}</b></span><span class="n">${m.n} clinics</span></div>
+      ${bar(m, you, d >= 0)}`;
+    el.title = k.long;
+    rows.appendChild(el);
+  }
+  const missing = state.meta.codes.filter(k => mine[k.code] == null && data.market[k.code]);
+  if (missing.length && codes.length) {
+    const el = document.createElement('div'); el.className = 'row muted';
+    el.innerHTML = `<div class="top"><span class="name" style="font-size:14px">No ${payer} rate on file for ${who}: ${missing.map(k => esc(k.short)).join(', ')}</span></div>`;
+    rows.appendChild(el);
+  }
+}
+function bar(m, you, up) {
+  const lo = Math.min(m.min, you ?? m.min), hi = Math.max(m.max, you ?? m.max), span = (hi - lo) || 1;
+  const x = v => 6 + (v - lo) / span * 88;
+  return `<svg class="bar" viewBox="0 0 100 22" preserveAspectRatio="none" aria-hidden="true">
+    <line class="track" x1="${x(m.min)}" y1="11" x2="${x(m.max)}" y2="11"/>
+    <rect class="iqr" x="${x(m.p25)}" y="5" width="${Math.max(0.6, x(m.p75) - x(m.p25))}" height="12" rx="1"/>
+    <line class="med" x1="${x(m.median)}" y1="2" x2="${x(m.median)}" y2="20"/>
+    ${you != null ? `<circle class="you ${up ? 'up' : ''}" cx="${x(you)}" cy="11" r="5"/>` : ''}
+  </svg>`;
+}
+
+// ---- market view --------------------------------------------------------
+async function showMarket() {
+  state.clinic = null; history.replaceState(null, '', location.pathname);
+  $('clinicView').classList.add('hidden'); $('marketView').classList.remove('hidden');
+  const names = state.meta.payers.map(p => p.name);
+  state.payer = names.includes(state.payer) ? state.payer : names[0];
+  renderTabs($('mtabs'), names, state.payer, null, async n => { state.payer = n; await renderMarket(); });
+  await renderMarket();
+}
+async function renderMarket() {
+  const pm = state.meta.payers.find(p => p.name === state.payer);
+  const data = await payerFile(pm.slug);
+  const codes = state.meta.codes.filter(k => data.market[k.code]);
+  const ex = k => data.market[k.code];
+  const core = codes.find(k => k.code === '97110') || codes[0];
+  $('mverdict').innerHTML = `<p class="who">${esc(pm.name)} · ${pm.clinics} Twin Cities PT clinics in its file</p>
+    <h1>The typical ${esc(pm.name)} clinic is paid <b class="up">${fmt(ex(core).median)}</b> for ${esc(core.short.toLowerCase())}, from ${fmt(ex(core).min)} to ${fmt(ex(core).max)}.</h1>
+    <p>Each line below is the median across clinics, one rate per clinic. Type your clinic above to see where you sit. File dated ${pm.last_updated || 'n/a'}.</p>`;
+  const t = $('mtable');
+  t.innerHTML = `<thead><tr><th>Code</th><th>Median</th><th>Middle half</th><th>Clinics</th></tr></thead><tbody>` +
+    codes.map(k => { const m = ex(k); return `<tr><td class="name"><b>${esc(k.short)}</b><span>CPT ${k.code} · ${esc(k.long)}</span></td><td class="med">${fmt(m.median)}</td><td>${fmt(m.p25)}–${fmt(m.p75)}<span class="rng">all: ${fmt(m.min)}–${fmt(m.max)}</span></td><td>${m.n}</td></tr>`; }).join('') + '</tbody>';
+}
+
+// ---- sources ------------------------------------------------------------
+function renderSources() {
+  const m = state.meta;
+  $('sources').innerHTML = `<div><b style="color:var(--ink)">In:</b> ${m.payers.map(p => `${esc(p.name)} (${p.clinics} clinics, ${p.rows.toLocaleString()} rate rows, file dated ${p.last_updated || 'n/a'})`).join(' · ')}.</div>
+    <div style="margin-top:8px"><b style="color:var(--ink)">Not in, and why:</b><ul>${m.excluded.map(e => `<li><b>${esc(e.payer)}</b> — ${esc(e.why)}</li>`).join('')}</ul></div>
+    <div style="margin-top:8px">Provider list: NPPES physical therapists and PT assistants in zips ${m.zip_prefixes.join(', ')} (${m.nppes_providers.toLocaleString()} NPIs). Rebuilt ${m.built}.</div>`;
+}
+const esc = s => String(s ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+load().catch(e => { $('hint').textContent = 'Could not load the data files. ' + e; });
+})();
+</script>
+</body>
+</html>
