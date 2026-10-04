@@ -55,7 +55,7 @@ index 458aabc..be2b4a3 100644
    # UCare - MN-based nonprofit (Medicare/Medicaid focused)
    - name: "UCare"
 diff --git a/scripts/ingest_ucare.py b/scripts/ingest_ucare.py
-index ee55a58..d30dd23 100644
+index ee55a58..78fc7c0 100644
 --- a/scripts/ingest_ucare.py
 +++ b/scripts/ingest_ucare.py
 @@ -44,15 +44,14 @@ def fetch_in_network_files(index_url: str) -> list[dict]:
@@ -81,3 +81,13 @@ index ee55a58..d30dd23 100644
      
      # Deduplicate by URL
      seen = set()
+@@ -88,7 +87,8 @@ def process_mrf_file(file_info: dict, db: RatesDatabase, target_npis: set[str])
+         else:
+             content = resp.content
+         
+-        data = json.loads(content)
++        # Fulcrum_InNetwork.json carries a stray cp1252 byte (0x96) -- decode leniently.
++        data = json.loads(content.decode('utf-8', errors='replace'))
+         
+         # Parse rates, filtering to our target NPIs
+         records = list(parse_tic_file_simple(
