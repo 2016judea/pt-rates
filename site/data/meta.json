@@ -1,5 +1,5 @@
 {
- "built": "2026-10-04",
+ "built": "2026-10-05",
  "default_clinic": "1407809494",
  "zip_prefixes": [
   "550",
@@ -223,19 +223,32 @@
   {
    "name": "HealthPartners",
    "slug": "healthpartners",
-   "rows": 1282392,
+   "rows": 4060908,
    "npis": 1538,
    "clinics": 134,
    "codes": 39,
    "last_updated": "2026-10-01",
-   "files": 6,
+   "files": 19,
    "networks": [
     "HealthPartners_Achieve-Large-Employer",
     "HealthPartners_Achieve-Small-Employer+Peak",
+    "HealthPartners_Coborns",
     "HealthPartners_Cornerstone",
+    "HealthPartners_Essentia",
+    "HealthPartners_Essentia-ND",
     "HealthPartners_HP-Select",
+    "HealthPartners_MercyOne_Tier1",
+    "HealthPartners_Monument-Health-Caregiver",
+    "HealthPartners_Northern-Trust",
+    "HealthPartners_Olivia",
     "HealthPartners_Open-Access+Simplica",
-    "HealthPartners_State-of-MN"
+    "HealthPartners_Spencer-Mahaska",
+    "HealthPartners_State-of-MN",
+    "HealthPartners_Trinity-ND",
+    "HealthPartners_UIHC-Tier1",
+    "HealthPartners_UIHC-Tier2",
+    "HealthPartners_VGM",
+    "HealthPartners_Waterloo-School"
    ]
   },
   {

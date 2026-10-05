@@ -33,10 +33,10 @@ workers'-comp case manager what the market actually pays.
 | Payer | Rate rows kept | Twin Cities PT clinics | Codes with 3+ clinics | File dated |
 |---|---|---|---|---|
 | BCBS Minnesota (Aware Network) | 254,112 | 195 | 39 | 2026-07-27 |
-| HealthPartners | 1,282,392 | 134 | 39 | 2026-10-01 |
+| HealthPartners | 4,060,908 | 134 | 39 | 2026-10-01 |
 | UCare | 235 | 23 | 5 | 2026-09-16 |
 
-278 clinics in the search box, from 4,812 NPPES PT/PTA records. Built 2026-10-04.
+278 clinics in the search box, from 4,812 NPPES PT/PTA records. Built 2026-10-05.
 <!-- /payer-table -->
 
 Not in, and why (each cost a day to learn in Feb 2026):
