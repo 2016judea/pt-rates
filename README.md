@@ -136,9 +136,10 @@ rates.duckdb>`) and pass `--extra-db` to `precompute.py`: DuckDB allows one
 writer per file. To build slices while an ingest is still writing, copy the
 `.duckdb` and its `.wal` and point `--db` at the copy.
 
-Build of 2026-10-04: HealthPartners networks 1–6 (the core Minnesota ones) and
-BCBS Aware were in; HP networks 7–19 were still downloading. Step 3 folds them
-in when they land.
+Build of 2026-10-04 (evening): all 19 HealthPartners networks and all 342 BCBS
+parts are ingested. Networks 7–19 added rate rows but no new Twin Cities clinic;
+the slices keep BCBS's Aware network only (see above), so the BCBS counts did
+not move when the other 13 groups landed.
 
 If a HealthPartners URL 404s, bump the `YYYY-MM-01` prefix in
 `config/payers.yaml` to the current month — the blob store keeps only the latest
