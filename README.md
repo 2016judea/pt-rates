@@ -2,6 +2,10 @@
 
 **Live:** https://pt-rates.vercel.app
 
+**Competitive Market Analysis.** What everyone in your sector is charging for a given service.
+
+— Aidan, [*Business Prototypes*](https://randomaidan.substack.com/p/business-prototypes), 2026-10-12. Sibling instance of the same product: [Salon rates](https://github.com/2016judea/salon-rates) (live at https://salon-rates.vercel.app). This one is the physical-therapy sector, where the price is what each insurer pays a clinic per billing code.
+
 A phone-first page for one kind of reader: the owner of an independent physical
 therapy clinic, between patients, who wants to know whether an insurer pays them
 less than it pays the clinic down the road. Type the clinic name or NPI and the
@@ -147,6 +151,12 @@ month (Feb's files were gone by Oct 2026). If BCBS's index 403s, the newest
 `mktg.bluecrossmn.com/mrf/2026/<YYYY-MM-01>_..._index.json` that answers 200 is
 the one to pass as `--index` (2026-09-01 on 2026-10-04; the 2026-10-01 file was
 not yet public).
+
+## Next build
+
+The vision is *everyone in your sector*. Today that means Twin Cities PT clinics on three
+payers; each new sector is a new instance of the same product (Salon rates is the second).
+UnitedHealthcare, Medica, Aetna, Cigna and Humana are the PT gaps listed above.
 
 ## Not this
 
