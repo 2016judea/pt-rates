@@ -47,7 +47,9 @@ EXCLUDED = [
     {"payer": "Aetna", "why": "HealthSparq portal; national file structure."},
     {"payer": "Cigna", "why": "CAPTCHA in front of the file list."},
     {"payer": "Humana", "why": "Bot protection and CAPTCHA."},
-    {"payer": "Medicare / Medicaid", "why": "Published separately by CMS and DHS in other formats."},
+    {"payer": "Medicaid", "why": "Published separately by Minnesota DHS in another format."},
+    # Medicare is not a negotiated payer: it appears on the page as a per-visit reference
+    # line, from CMS's own 2024 billing data (pipeline/visit_mix.py -> site/data/visit.json).
 ]
 
 KEEP_TYPES = ("negotiated", "fee schedule")

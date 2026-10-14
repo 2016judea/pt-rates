@@ -126,6 +126,25 @@ td.num{white-space:nowrap}
 .empty{padding:28px 20px;text-align:center;color:var(--ink-2);background:var(--surface);border:1px dashed var(--line-2);border-radius:var(--radius)}
 footer{margin-top:40px;font-size:13px;color:var(--ink-3);line-height:1.6}
 footer p{margin:6px 0}
+/* per visit */
+.knobs{display:flex;flex-direction:column;gap:12px;margin:12px 0 0}
+.knob{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.knob label{font-weight:700;color:var(--ink);font-size:15px}
+.money{position:relative;display:inline-flex;align-items:center}
+.money:before{content:"$";position:absolute;left:12px;color:var(--ink-3);font-weight:700;font-size:17px}
+.money input,.mix input{font:700 17px Manrope,system-ui;color:var(--ink);background:var(--surface);border:1.5px solid var(--line-2);border-radius:10px;padding:9px 10px 9px 26px;width:110px;outline:none;font-variant-numeric:tabular-nums}
+.money input:focus,.mix input:focus{border-color:var(--aqua);box-shadow:0 0 0 3px var(--aqua-wash)}
+.knob .tabs{margin:0;flex:0 1 auto}
+.knob .tabs button{padding:8px 14px}
+.knobs details summary{cursor:pointer;color:var(--ink-2);font-size:13px;font-weight:600}
+.knobs details summary b{color:var(--ink)}
+.mix{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin:10px 0 4px}
+.mix div{display:flex;flex-direction:column;justify-content:space-between;gap:4px;font-size:12px;color:var(--ink-2);font-weight:600}
+.mix input{width:100%;padding-left:10px}
+.linkbtn{border:0;background:none;color:var(--aqua-deep);font:700 13px Manrope,system-ui;cursor:pointer;padding:6px 0;text-decoration:underline}
+.bar .cost{stroke:var(--below);stroke-width:1.5;stroke-dasharray:2 1.5}
+.legend i.cost{width:0;height:12px;border-left:2px dashed var(--below);border-radius:0}
+.row .nums .loss{color:var(--below);font-weight:800}
 .hidden{display:none!important}
 @media (min-width:900px){
   .wrap{max-width:860px}
@@ -133,6 +152,7 @@ footer p{margin:6px 0}
   .row{display:grid;grid-template-columns:1.6fr 1.2fr 1.2fr;align-items:center;column-gap:20px;padding:12px 18px}
   .row .top{grid-column:1} .row .nums{grid-column:2;margin-top:0} .row .bar{grid-column:3;margin-top:0}
   .row .nums .n{margin-left:0}
+  #vrows .row{grid-template-columns:1fr 2.2fr 1fr} #vrows .row .nums{row-gap:2px}
 }
 </style>
 <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};</script><script defer src="/_vercel/insights/script.js"></script><script>/* bm-visitor-id — who read this page, on how many days, and what they touched.
@@ -281,10 +301,16 @@ if(me){posthog.opt_out_capturing();}else{if(p==="0")posthog.opt_in_capturing();p
 <p class="hint" id="hint"></p>
 
 <div id="clinicView" class="hidden">
+  <section class="verdict" id="vverdict" aria-live="polite"></section>
+  <div class="card knobs" id="knobs"></div>
+  <h2>Per visit, by payer</h2>
+  <div class="rows" id="vrows"></div>
+  <div class="legend"><span><i class="dot"></i>this clinic</span><span><i class="line"></i>market median</span><span><i class="band"></i>middle half of clinics</span><span><i class="cost"></i>your cost</span></div>
+  <h2 id="codesHead">Code by code</h2>
   <div class="tabs" id="tabs" role="tablist"></div>
   <section class="verdict" id="verdict" aria-live="polite"></section>
   <p class="hint" id="missingPayers" style="margin-top:10px"></p>
-  <h2 id="rowsHead">Code by code</h2>
+  <h2 id="rowsHead" class="hidden">Code by code</h2>
   <div class="rows" id="rows"></div>
   <div class="legend"><span><i class="dot"></i>this clinic</span><span><i class="line"></i>market median</span><span><i class="band"></i>middle half of clinics</span><span>line = lowest to highest</span></div>
 </div>
@@ -292,6 +318,8 @@ if(me){posthog.opt_out_capturing();}else{if(p==="0")posthog.opt_in_capturing();p
 <div id="marketView" class="hidden">
   <div class="tabs" id="mtabs" role="tablist"></div>
   <section class="verdict" id="mverdict"></section>
+  <h2 id="mvisitHead">Per visit, by payer</h2>
+  <div class="tbl-wrap"><table id="mvisit"></table></div>
   <h2>Market median by code</h2>
   <div class="tbl-wrap"><table id="mtable"></table></div>
 </div>
@@ -322,8 +350,11 @@ $('theme').onclick = () => { root.dataset.theme = isDark() ? 'light' : 'dark'; t
 paintTheme();
 
 async function load() {
-  const [meta, clinics] = await Promise.all([fetch('data/meta.json').then(r => r.json()), fetch('data/clinics.json').then(r => r.json())]);
-  state.meta = meta; state.clinics = clinics;
+  const [meta, clinics, visit] = await Promise.all([fetch('data/meta.json').then(r => r.json()), fetch('data/clinics.json').then(r => r.json()), fetch('data/visit.json').then(r => r.json())]);
+  state.meta = meta; state.clinics = clinics; state.visit = visit;
+  const sp = new URLSearchParams(location.search);
+  state.minutes = visit.minutes.some(m => m.min === +sp.get('min')) ? +sp.get('min') : visit.default_minutes;
+  state.cost = sp.has('cost') && isFinite(parseFloat(sp.get('cost'))) ? parseFloat(sp.get('cost')) : visit.example_cost.value;
   const inZips = meta.zip_prefixes.map(z => z + 'xx').join(', ');
   $('hint').textContent = `${clinics.length} PT clinics in zips ${inZips}. Type a name, or leave it blank for the whole market.`;
   renderSources();
@@ -373,13 +404,14 @@ $('clear').onclick = () => { q.value = ''; search.classList.remove('has'); close
 // ---- clinic view --------------------------------------------------------
 async function selectClinic(c, push) {
   state.clinic = c; q.value = c.name; search.classList.add('has'); closeMenu(); q.blur();
-  if (push) history.replaceState(null, '', '?clinic=' + c.id);
+  if (push) syncUrl();
   state.payer = c.payers.includes(state.payer) ? state.payer : c.payers[0];
   $('marketView').classList.add('hidden'); $('clinicView').classList.remove('hidden');
   renderTabs($('tabs'), state.meta.payers.map(p => p.name), state.payer, c.payers, async name => { state.payer = name; await renderClinic(); });
   const missing = state.meta.payers.map(p => p.name).filter(n => !c.payers.includes(n));
   $('missingPayers').textContent = missing.length ? `${missing.join(' and ')} publish${missing.length === 1 ? 'es' : ''} no rate for ${c.name} — either not in network, or not in the file.` : '';
-  await renderClinic();
+  renderKnobs();
+  await Promise.all([renderVisit(), renderClinic()]);
 }
 function renderTabs(el, names, selected, enabled, onpick) {
   el.innerHTML = '';
@@ -445,20 +477,137 @@ function aboveYou(data, mine, codes) {
   const n = Object.values(data.clinics).filter(v => v[k.code] != null && v[k.code] > you).length;
   return `<div class="stat"><b>${n} of ${m.n}</b><span>clinics paid more than you for ${esc(k.short.toLowerCase())} (top: ${fmt(m.max)})</span></div>`;
 }
-function bar(m, you, up) {
-  const lo = Math.min(m.min, you ?? m.min), hi = Math.max(m.max, you ?? m.max), span = (hi - lo) || 1;
+function bar(m, you, up, cost) {
+  const showCost = cost != null && cost > 0;
+  const lo = Math.min(m.min, you ?? m.min, showCost ? cost : m.min), hi = Math.max(m.max, you ?? m.max, showCost ? cost : m.max), span = (hi - lo) || 1;
   const x = v => 6 + (v - lo) / span * 88;
   return `<svg class="bar" viewBox="0 0 100 22" preserveAspectRatio="none" aria-hidden="true">
     <line class="track" x1="${x(m.min)}" y1="11" x2="${x(m.max)}" y2="11"/>
     <rect class="iqr" x="${x(m.p25)}" y="5" width="${Math.max(0.6, x(m.p75) - x(m.p25))}" height="12" rx="1"/>
     <line class="med" x1="${x(m.median)}" y1="2" x2="${x(m.median)}" y2="20"/>
+    ${showCost ? `<line class="cost" x1="${x(cost)}" y1="0" x2="${x(cost)}" y2="22"/>` : ''}
     ${you != null ? `<circle class="you ${up ? 'up' : ''}" cx="${x(you)}" cy="11" r="5"/>` : ''}
   </svg>`;
 }
 
+// ---- per visit ----------------------------------------------------------
+// A visit = N timed units (CMS 8-minute rule, from the minutes picked) split across
+// codes in the proportions Medicare's 2024 Twin Cities PT billing shows (data/visit.json),
+// unless the reader typed their own units. Every dollar is a payer's published rate x units.
+function syncUrl() {
+  const sp = new URLSearchParams();
+  if (state.clinic) sp.set('clinic', state.clinic.id);
+  if (state.cost !== state.visit.example_cost.value) sp.set('cost', state.cost);
+  if (state.minutes !== state.visit.default_minutes) sp.set('min', state.minutes);
+  const qs = sp.toString(); history.replaceState(null, '', qs ? '?' + qs : location.pathname);
+}
+function units() {
+  if (state.mix && totalUnits(state.mix) > 0) return state.mix;
+  const n = state.visit.minutes.find(m => m.min === state.minutes).units;
+  return Object.fromEntries(state.visit.codes.map(k => [k.code, n * k.share]));
+}
+const totalUnits = u => Object.values(u).reduce((a, b) => a + b, 0);
+function perVisit(rates, u) {
+  let t = 0;
+  for (const [code, n] of Object.entries(u)) { if (!n) continue; if (rates[code] == null) return null; t += n * rates[code]; }
+  return t;
+}
+function quant(sorted, p) { const i = (sorted.length - 1) * p, lo = Math.floor(i), hi = Math.ceil(i); return sorted[lo] + (sorted[hi] - sorted[lo]) * (i - lo); }
+function visitMarket(data, u) {
+  const vals = Object.values(data.clinics).map(r => perVisit(r, u)).filter(v => v != null).sort((a, b) => a - b);
+  if (vals.length < 3) return null;
+  return { median: quant(vals, .5), p25: quant(vals, .25), p75: quant(vals, .75), min: vals[0], max: vals[vals.length - 1], n: vals.length, vals };
+}
+const medicareVisit = u => perVisit(Object.fromEntries(state.visit.codes.map(k => [k.code, k.medicare])), u);
+const gloss = code => (state.meta.codes.find(k => k.code === code) || { short: code }).short;
+const fmt0 = n => '$' + Math.round(n).toLocaleString();
+function visitLabel(u) {
+  const n = totalUnits(u);
+  return state.mix ? `your ${+n.toFixed(1)}-unit visit` : `a ${state.minutes}-minute visit`;
+}
+function renderKnobs() {
+  const v = state.visit, u = units();
+  const mixLine = state.visit.codes.map(k => `${Math.round(k.share * 100)}% ${esc(gloss(k.code).toLowerCase())}`).join(', ');
+  $('knobs').innerHTML = `
+    <div class="knob"><label for="cost">Your cost per visit</label><span class="money"><input id="cost" type="number" inputmode="decimal" min="0" step="1" value="${state.cost}" aria-label="Your cost per visit"></span></div>
+    <div class="knob"><label>Visit length</label><div class="tabs" id="mins" role="tablist" aria-label="Visit length">${v.minutes.map(m => `<button type="button" role="tab" data-min="${m.min}" aria-selected="${!state.mix && m.min === state.minutes}">${m.min} min</button>`).join('')}</div></div>
+    <details id="mixbox"${state.mix ? ' open' : ''}><summary>${state.mix ? '<b>Your own visit mix</b>' : `<b>${+totalUnits(u).toFixed(1)} units</b>, split ${mixLine}`}</summary>
+      <p style="margin:8px 0 0;font-size:13px">The split is how Twin Cities physical therapists billed Medicare in 2024 (${v.providers.toLocaleString()} therapists, ${v.timed_units.toLocaleString()} treatment units; <a href="${esc(v.source_url)}" target="_blank" rel="noopener">CMS</a>). Minutes become units by ${esc(v.minutes_rule)}. The $${v.example_cost.value} cost is an example: <a href="${esc(v.example_cost.url)}" target="_blank" rel="noopener">${esc(v.example_cost.who)}</a>, “${esc(v.example_cost.quote)}” Type your own.</p>
+      <div class="mix">${v.codes.map(k => `<div><span>${esc(gloss(k.code))} · ${k.code}</span><input type="number" inputmode="decimal" min="0" step="0.1" data-code="${k.code}" value="${+u[k.code].toFixed(2)}" aria-label="Units of ${esc(gloss(k.code))} per visit"></div>`).join('')}</div>
+      ${state.mix ? '<button type="button" class="linkbtn" id="mixreset">Back to the Medicare mix</button>' : ''}
+    </details>`;
+  const cost = $('cost');
+  cost.addEventListener('input', () => { const x = parseFloat(cost.value); state.cost = isFinite(x) && x >= 0 ? x : null; syncUrl(); renderVisit(); });
+  $('mins').querySelectorAll('button').forEach(b => b.onclick = () => { state.mix = null; state.minutes = +b.dataset.min; syncUrl(); renderKnobs(); renderVisit(); });
+  $('knobs').querySelectorAll('.mix input').forEach(inp => inp.addEventListener('input', () => {
+    const mix = {}; $('knobs').querySelectorAll('.mix input').forEach(i => { const x = parseFloat(i.value); mix[i.dataset.code] = isFinite(x) && x > 0 ? x : 0; });
+    state.mix = mix; $('mins').querySelectorAll('button').forEach(b => b.setAttribute('aria-selected', 'false'));
+    $('mixbox').querySelector('summary').innerHTML = '<b>Your own visit mix</b>'; renderVisit();
+  }));
+  const r = $('mixreset'); if (r) r.onclick = () => { state.mix = null; renderKnobs(); renderVisit(); };
+}
+async function renderVisit() {
+  const c = state.clinic, u = units(), cost = state.cost;
+  const tok = (state.vtok = (state.vtok || 0) + 1);
+  const res = [];
+  for (const pm of state.meta.payers) {
+    if (!c.payers.includes(pm.name)) continue;
+    const data = await payerFile(pm.slug);
+    const mkt = visitMarket(data, u), you = perVisit(data.clinics[c.id] || {}, u);
+    res.push({ pm, mkt, you });
+  }
+  if (tok !== state.vtok) return;
+  const med = medicareVisit(u), ok = res.filter(r => r.mkt && r.you != null);
+  const who = esc(c.name), label = visitLabel(u);
+  const losers = cost != null ? ok.filter(r => r.you < cost).sort((a, b) => (a.you - cost) - (b.you - cost)) : [];
+  const under = ok.filter(r => r.you < r.mkt.median).sort((a, b) => (a.you - a.mkt.median) - (b.you - b.mkt.median));
+  let h, lead;
+  if (!ok.length) h = `<h1>No payer we can read prices ${label} for ${who}.</h1>`;
+  else if (losers.length) { lead = losers[0]; h = `<h1>${esc(lead.pm.name)} pays ${who} <b>${fmt(lead.you)} for ${label}</b>, ${fmt(cost - lead.you)} under your ${fmt0(cost)} cost.</h1>`; }
+  else if (under.length) { lead = under[0]; h = `<h1>${esc(lead.pm.name)} pays ${who} <b>${fmt(lead.you)} for ${label}</b>, ${fmt(lead.mkt.median - lead.you)} under the market median.</h1>`; }
+  else { lead = [...ok].sort((a, b) => a.you - b.you)[0]; h = `<h1>${who} is paid <b class="up">at or above the market median per visit</b> by every payer we can read.</h1>`; }
+  const gap = lead ? lead.mkt.median - lead.you : 0;
+  $('vverdict').innerHTML = `<p class="who">Per visit · ${esc(c.city || 'Twin Cities')}${c.n > 1 ? ' · ' + c.n + ' therapists rolled up' : ''}</p>${h}
+    <p>Each payer's published rate for each code, times the units in ${label}. Market = every Twin Cities PT clinic in that payer's file, priced the same way.</p>
+    ${lead ? `<div class="stats">
+      <div class="stat"><b>${fmt(lead.mkt.median)}</b><span>${esc(lead.pm.name)} market median</span></div>
+      <div class="stat"><b>${fmt(lead.mkt.p75)}</b><span>top quarter of clinics starts here</span></div>
+      <div class="stat"><b>${gap > 0 ? fmt0(gap * 100) : '$0'}</b><span>${gap > 0 ? 'under market, every 100 visits' : 'under market per 100 visits'}</span></div>
+    </div>` : ''}`;
+  const rows = $('vrows'); rows.innerHTML = '';
+  const order = [...res].sort((a, b) => (a.you != null && a.mkt ? a.you - a.mkt.median : 1e9) - (b.you != null && b.mkt ? b.you - b.mkt.median : 1e9));
+  for (const r of order) {
+    const el = document.createElement('div'); el.className = 'row';
+    if (!r.mkt || r.you == null) {
+      el.className = 'row muted';
+      el.innerHTML = `<div class="top"><span class="name" style="font-size:14px">${esc(r.pm.name)}: no per-visit dollar. ${r.pm.slug === 'ucare' ? 'UCare publishes these treatment codes as a percentage of charges, not dollars.' : 'A code in this visit has no rate on file.'}</span></div>`;
+      rows.appendChild(el); continue;
+    }
+    const d = pct(r.you, r.mkt.median), cls = d < 0 ? 'below' : d > 0 ? 'above' : 'even';
+    const chip = d < 0 ? `${d}% under` : d > 0 ? `+${d}% over` : 'at median';
+    const loss = cost != null && r.you < cost;
+    const per100 = d < 0 ? `<span>${fmt0((r.mkt.median - r.you) * 100)} under market / 100 visits</span>` : '';
+    el.innerHTML = `<div class="top"><div><span class="name">${esc(r.pm.name)}</span><span class="code">${r.mkt.n} clinics</span></div><span class="chip ${cls}">${chip}</span></div>
+      <div class="nums"><span>You <b>${fmt(r.you)}</b></span><span>Median <b>${fmt(r.mkt.median)}</b></span>${med ? `<span>${Math.round(r.you / med * 100)}% of Medicare</span>` : ''}${loss ? `<span class="loss">${fmt(cost - r.you)} under cost</span>` : ''}${per100}</div>
+      ${bar(r.mkt, r.you, d >= 0, cost)}`;
+    rows.appendChild(el);
+  }
+  if (med) {
+    const el = document.createElement('div'); el.className = 'row muted';
+    el.innerHTML = `<div class="top"><span class="name" style="font-size:14px">Medicare, for reference: ${fmt(med)} for ${label} (average allowed amount, Twin Cities PTs, 2024)</span></div>`;
+    rows.appendChild(el);
+  }
+  const missing = state.meta.payers.map(p => p.name).filter(n => !c.payers.includes(n));
+  if (missing.length) {
+    const el = document.createElement('div'); el.className = 'row muted';
+    el.innerHTML = `<div class="top"><span class="name" style="font-size:14px">${esc(missing.join(' and '))}: no rate on file for ${who}.</span></div>`;
+    rows.appendChild(el);
+  }
+}
+
 // ---- market view --------------------------------------------------------
 async function showMarket() {
-  state.clinic = null; history.replaceState(null, '', location.pathname);
+  state.clinic = null; syncUrl();
   $('clinicView').classList.add('hidden'); $('marketView').classList.remove('hidden');
   const names = state.meta.payers.map(p => p.name);
   state.payer = names.includes(state.payer) ? state.payer : names[0];
@@ -471,9 +620,18 @@ async function renderMarket() {
   const codes = state.meta.codes.filter(k => data.market[k.code]);
   const ex = k => data.market[k.code];
   const core = ['97110', '97140', '97530', '97161'].map(c => codes.find(k => k.code === c)).find(Boolean) || codes.reduce((a, k) => ex(k).n > ex(a).n ? k : a, codes[0]);
+  const u = units(), vm = visitMarket(data, u);
   $('mverdict').innerHTML = `<p class="who">${esc(pm.name)} · ${pm.clinics} Twin Cities PT clinics in its file</p>
-    <h1>The typical ${esc(pm.name)} clinic is paid <b class="up">${fmt(ex(core).median)}</b> for ${esc(core.short.toLowerCase())}, from ${fmt(ex(core).min)} to ${fmt(ex(core).max)}.</h1>
+    ${vm ? `<h1>The typical ${esc(pm.name)} clinic is paid <b class="up">${fmt(vm.median)}</b> for ${visitLabel(u)}, from ${fmt(vm.min)} to ${fmt(vm.max)}.</h1>`
+         : `<h1>The typical ${esc(pm.name)} clinic is paid <b class="up">${fmt(ex(core).median)}</b> for ${esc(core.short.toLowerCase())}, from ${fmt(ex(core).min)} to ${fmt(ex(core).max)}.</h1>`}
     <p>Each line below is the median across clinics, one rate per clinic. Type your clinic above to see where you sit. File dated ${pm.last_updated || 'n/a'}.</p>`;
+  const vt = [];
+  for (const p of state.meta.payers) { const m = visitMarket(await payerFile(p.slug), u); if (m) vt.push([p.name, m]); }
+  const med = medicareVisit(u);
+  $('mvisitHead').textContent = `Per visit, by payer · ${visitLabel(u)}`;
+  $('mvisit').innerHTML = `<thead><tr><th>Payer</th><th>Median</th><th>Middle half</th><th>Clinics</th></tr></thead><tbody>` +
+    vt.map(([n, m]) => `<tr><td class="name"><b>${esc(n)}</b></td><td class="med">${fmt(m.median)}</td><td class="num">${fmt(m.p25)}–${fmt(m.p75)}<span class="rng">all: ${fmt(m.min)}–${fmt(m.max)}</span></td><td class="num">${m.n}</td></tr>`).join('') +
+    (med ? `<tr><td class="name"><b>Medicare</b><span>average allowed, Twin Cities PTs, 2024</span></td><td class="med">${fmt(med)}</td><td class="num">—</td><td class="num">${state.visit.providers.toLocaleString()} PTs</td></tr>` : '') + '</tbody>';
   const t = $('mtable');
   t.innerHTML = `<thead><tr><th>Code</th><th>Median</th><th>Middle half</th><th>Clinics</th></tr></thead><tbody>` +
     codes.map(k => { const m = ex(k); return `<tr><td class="name"><b>${esc(k.short)}</b><span>CPT ${k.code}<span class="gloss"> · ${esc(k.long)}</span></span></td><td class="med">${fmt(m.median)}</td><td class="num">${fmt(m.p25)}–${fmt(m.p75)}<span class="rng">all: ${fmt(m.min)}–${fmt(m.max)}</span></td><td class="num">${m.n}</td></tr>`; }).join('') + '</tbody>';
@@ -484,6 +642,7 @@ function renderSources() {
   const m = state.meta;
   $('sources').innerHTML = `<div><b style="color:var(--ink)">In:</b> ${m.payers.map(p => `${esc(p.name)} (${p.clinics} clinics, ${p.rows.toLocaleString()} rate rows, file dated ${p.last_updated || 'n/a'})`).join(' · ')}.</div>
     <div style="margin-top:8px"><b style="color:var(--ink)">Not in, and why:</b><ul>${m.excluded.map(e => `<li><b>${esc(e.payer)}</b> — ${esc(e.why)}</li>`).join('')}</ul></div>
+    <div style="margin-top:8px"><b style="color:var(--ink)">Per visit:</b> the visit mix and the Medicare line come from ${esc(state.visit.source)} (<a href="${esc(state.visit.source_url)}" target="_blank" rel="noopener">CMS</a>), ${esc(state.visit.who)}: ${state.visit.providers.toLocaleString()} therapists. Its six codes carry ${Math.round(state.visit.coverage * 100)}% of their treatment units. Medicare's rows alone bound a visit to between ${state.visit.units_per_visit_bounds[0]} and ${state.visit.units_per_visit_bounds[1]} units, so the visit length is yours to set.</div>
     <div style="margin-top:8px">Provider list: NPPES physical therapists and PT assistants in zips ${m.zip_prefixes.join(', ')} (${m.nppes_providers.toLocaleString()} NPIs). Rebuilt ${m.built}.</div>`;
 }
 const esc = s => String(s ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));

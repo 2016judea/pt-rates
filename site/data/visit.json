@@ -1,0 +1,70 @@
+{
+ "source": "CMS, Medicare Physician & Other Practitioners - by Provider and Service, 2024",
+ "source_url": "https://data.cms.gov/provider-summary-by-type-of-service/medicare-physician-other-practitioners/medicare-physician-other-practitioners-by-provider-and-service",
+ "who": "physical therapists in private practice, Twin Cities zips 550, 551, 552, 553, 554, 556",
+ "providers": 1065,
+ "timed_units": 632679,
+ "coverage": 0.9844,
+ "codes": [
+  {
+   "code": "97110",
+   "share": 0.4376,
+   "medicare": 23.01
+  },
+  {
+   "code": "97112",
+   "share": 0.2318,
+   "medicare": 27.25
+  },
+  {
+   "code": "97140",
+   "share": 0.153,
+   "medicare": 20.25
+  },
+  {
+   "code": "97530",
+   "share": 0.1433,
+   "medicare": 31.65
+  },
+  {
+   "code": "97116",
+   "share": 0.0222,
+   "medicare": 21.38
+  },
+  {
+   "code": "97535",
+   "share": 0.0122,
+   "medicare": 26.97
+  }
+ ],
+ "eval": {
+  "code": "97161",
+  "medicare": 97.73
+ },
+ "minutes": [
+  {
+   "min": 30,
+   "units": 2
+  },
+  {
+   "min": 45,
+   "units": 3
+  },
+  {
+   "min": 60,
+   "units": 4
+  }
+ ],
+ "minutes_rule": "CMS 8-minute rule: 23-37 minutes = 2 units, 38-52 = 3, 53-67 = 4",
+ "default_minutes": 45,
+ "units_per_visit_bounds": [
+  1.41,
+  3.26
+ ],
+ "example_cost": {
+  "value": 81,
+  "quote": "If we can't get $81 per visit, then we're losing money and we're not gonna do that.",
+  "who": "Justin Stiver, rehab payer-contracting consultant, on StrataPT",
+  "url": "https://www.stratapt.com/article/how-to-renegotiate-payer-contracts-for-rehab-therapy-clinics-ft-justin-stiver"
+ }
+}

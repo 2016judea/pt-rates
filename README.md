@@ -31,6 +31,27 @@ three uses: anchor a fee-schedule negotiation with each payer, prove
 underpayment against the local median per code, and show an employer or
 workers'-comp case manager what the market actually pays.
 
+## Per visit (2026-10-13)
+
+The headline is now **what each payer pays for a visit**, not code by code: the people
+who negotiate PT contracts reason in dollars per visit against their own cost per visit
+(*"If we can't get $81 per visit, then we're losing money"* — a payer-contracting
+consultant on StrataPT, cited in `customer-lab/maps/pt-rates.json`). The page prices one
+visit per clinic per payer, puts it beside the market's per-visit spread and Medicare, and
+takes the owner's cost per visit (pre-filled with that $81 example) to show where a
+contract loses money and how much it trails the market per 100 visits.
+
+- **The mix is measured, not chosen.** Codes and proportions are the share of treatment
+  units Twin Cities PTs billed Medicare in 2024 (`pipeline/medicare_pull.py` →
+  `pipeline/visit_mix.py` → `site/data/visit.json`): 44% exercise, 23% neuromuscular
+  re-ed, 15% manual, 14% therapeutic activities, 2% gait, 1% self-care (98% of units).
+- **The length is the owner's.** Minutes become units by CMS's 8-minute rule (45 min = 3
+  units, the default). Medicare's rows only bound a visit to 1.4–3.3 units, so no number
+  is invented for it. Anyone can type their own units per code.
+- UCare has no per-visit dollar (percent-of-charges); the page says so.
+- Ideal model and what reality fills: `DATA_MODEL.md`. Distribution and sales rules:
+  `GO_TO_MARKET.md`.
+
 ## What is in, what is not
 
 <!-- payer-table -->
@@ -40,7 +61,7 @@ workers'-comp case manager what the market actually pays.
 | HealthPartners | 4,060,908 | 134 | 39 | 2026-10-01 |
 | UCare | 235 | 23 | 5 | 2026-09-16 |
 
-278 clinics in the search box, from 4,812 NPPES PT/PTA records. Built 2026-10-05.
+278 clinics in the search box, from 4,812 NPPES PT/PTA records. Built 2026-10-14.
 <!-- /payer-table -->
 
 Not in, and why (each cost a day to learn in Feb 2026):
@@ -52,7 +73,7 @@ Not in, and why (each cost a day to learn in Feb 2026):
 | Aetna | HealthSparq portal; national file structure. |
 | Cigna | CAPTCHA in front of the file list. |
 | Humana | Bot protection and CAPTCHA. |
-| Medicare / Medicaid | Published separately by CMS and DHS in other formats. |
+| Medicaid | Published separately by Minnesota DHS in another format. (Medicare is on the page as a per-visit reference line, from CMS's 2024 billing data.) |
 
 Rules the numbers obey:
 
@@ -89,6 +110,7 @@ Rules the numbers obey:
 | BCBS MN index (`mktg.bluecrossmn.com/mrf/2026/2026-01-01_..._index.json`, 645 "Local" files) | negotiated rates by provider group | file dated 2026-07-27 |
 | NPPES registry API, taxonomies 225100000X / 225200000X, zips 550, 551, 552, 553, 554, 556 | the provider list and clinic names | pulled 2026-10-04 |
 | `config/cpt_codes.yaml` in the pipeline repo | the PT CPT codes | — |
+| CMS Medicare Physician & Other Practitioners by Provider and Service (data.cms.gov dataset `92396110-…`) | the visit mix and the Medicare reference line | 2024 |
 
 Plain-language code names are in `pipeline/cpt_gloss.json`.
 

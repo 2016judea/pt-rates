@@ -4,3 +4,4 @@ __pycache__/
 *.duckdb
 .DS_Store
 /pipeline/data/
+pipeline/cache/

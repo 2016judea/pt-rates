@@ -1,5 +1,5 @@
 {
- "built": "2026-10-05",
+ "built": "2026-10-14",
  "default_clinic": "1407809494",
  "zip_prefixes": [
   "550",
@@ -285,17 +285,17 @@
    "why": "Bot protection and CAPTCHA."
   },
   {
-   "payer": "Medicare / Medicaid",
-   "why": "Published separately by CMS and DHS in other formats."
+   "payer": "Medicaid",
+   "why": "Published separately by Minnesota DHS in another format."
   }
  ],
  "clinics_total": 278,
  "nppes_providers": 4812,
  "rollup": {
   "tin-group": 1713,
-  "addr->org": 154,
-  "tin->org": 1989,
   "org": 146,
+  "tin->org": 1989,
+  "addr->org": 154,
   "override": 1
  }
 }
