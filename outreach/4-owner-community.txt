@@ -1,0 +1,12 @@
+Your piece on negotiating PT reimbursement has an owner who took one payer from $62 to $83 a visit over three years. I can show where $83 lands in one market, from the payers' own files.
+
+In the Twin Cities, HealthPartners pays the median PT clinic $81.63 for a 45-minute visit. The top quarter starts at $103.31. BCBS's median is $128.70, and its lowest clinic gets $102.87. So $83 is a middling HealthPartners contract here, and below every BCBS one.
+
+Any owner can type their clinic and their cost per visit: https://pt-rates.vercel.app
+Free, Twin Cities only so far.
+
+If your members are in other metros, which one should be next?
+
+Best,
+Aidan
+https://randomaidan.substack.com/p/business-prototypes

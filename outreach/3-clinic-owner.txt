@@ -1,0 +1,14 @@
+Christian,
+
+Your site says you give every patient a full, 1-on-1 session and reject the assembly-line model. I priced one of those hours (four units) off HealthPartners' own October rate file.
+
+HealthPartners pays Flexed Mettle $92.13 for it. Medicare allowed $99.29 for the same hour in the Twin Cities in 2024. The median clinic in HealthPartners' file gets $108.84. That is $1,671 under the market every 100 visits.
+
+BCBS is closer: $158.33 against a $171.60 median.
+
+Your page, with the hour already set: https://pt-rates.vercel.app/?clinic=1164353827&min=60
+Type your cost per visit and it shows which contract loses money.
+
+Best,
+Aidan
+https://randomaidan.substack.com/p/business-prototypes

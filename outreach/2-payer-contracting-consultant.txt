@@ -1,0 +1,11 @@
+On the StrataPT episode you said: "If we can't get $81 per visit, then we're losing money." I priced that line against a payer's own published rates.
+
+HealthPartners pays the median Twin Cities PT clinic $81.63 for a 45-minute visit, by its October Transparency in Coverage file. Half the clinics in that file, 67 of 134, sit under your $81. The lowest is $61.57.
+
+This page prices any clinic's visit, per payer, against the market and the clinic's own cost. It opens with your $81 already typed in: https://pt-rates.vercel.app
+
+Twin Cities only so far, three payers. Which market would your clients want next?
+
+Best,
+Aidan
+https://randomaidan.substack.com/p/business-prototypes

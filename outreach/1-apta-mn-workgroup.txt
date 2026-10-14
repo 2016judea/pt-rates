@@ -1,0 +1,13 @@
+Your Payor Advocacy Workgroup page says to bring payor issues to this inbox, and that the workgroup meets with the larger payors in the state. Here is one, in the unit owners negotiate in.
+
+HealthPartners' own October rate file pays the median Twin Cities PT clinic $81.63 for a 45-minute follow-up visit. That is 110% of what Medicare allowed for the same visit here in 2024. Half the clinics in the file, 67 of 134, sit at $78.96 or less. BCBS's Aware network pays its median clinic $128.70 for the same visit.
+
+Every clinic's number, per payer, is here: https://pt-rates.vercel.app
+
+It is built from the payers' Transparency in Coverage files and CMS's own billing data, with the source and file date under each number. Free, no login.
+
+If the workgroup wants it cut another way before a payer meeting, I'll do that.
+
+Best,
+Aidan
+https://randomaidan.substack.com/p/business-prototypes
