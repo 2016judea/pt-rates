@@ -14,6 +14,43 @@ code-by-code table underneath for the few who scroll.
 
 `grounded: 2026-10-04 — built from Aidan's PT market analysis repo at his request`
 
+## The paywall
+
+Free: any clinic's own rates against the market, per payer, per code and per visit, plus
+four neighbouring clinics; the market's medians and spreads. Paid: the full table, every
+clinic and every payer side by side, and your own visit mix priced against all of them.
+Same pattern as [msp-house-index](https://github.com/2016judea/msp-house-index).
+
+`site/` ships only aggregates (`data/market.json`) and the clinic directory. Every clinic's own
+rates live in `private/payers/` (gitignored); `scripts/build_public.py` bundles them into
+`private/bundle/`, which `scripts/deploy.py` uploads as `api/_full/`, read by the functions only.
+
+| route | does |
+|---|---|
+| `GET /api/preview?clinic=<id>` / `?for=<token>` | one clinic's own rates plus four neighbours' (the free slice) |
+| `POST /api/checkout` | Stripe embedded Checkout at the price in `site/offer.json`; mints the buyer's password |
+| `POST /api/stripe-webhook` | emails the password (Mailgun) once per session, and a sale notice to Aidan |
+| `GET /api/session-status` | the return page's check; sends the password if the webhook has not |
+| `GET /api/data` | password in `x-password`: the full table |
+
+`/for/<token>/` opens on one clinic; tokens come from `outreach/round1/ledger.csv` (gitignored,
+names and addresses never ship). Funnel events, to Vercel and PostHog: `preview_open`,
+`lock_click`, `checkout_open`, `paid`, `unlock`. Lost password: `python3 scripts/fulfil.py <session>`;
+a free copy: `python3 scripts/issue_password.py "comp:<label>"` (then redeploy so the label logs).
+Vercel env: `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `ACCESS_SECRET`, `MAILGUN_*`, `SITE_URL`.
+
+The per-clinic payer files were public in `site/data/payers/` until 2026-10-15 and are still in
+this repo's git history before that commit.
+
+## Price
+
+**$500, once. A hypothesis, set 2026-10-15, not a finding.** A clinic under its payer's median sits
+a median $2.67 (HealthPartners) to $5.02 (BCBS) a 45-minute visit below it (measured from
+`private/payers/` that day). Call it $4. A three-therapist clinic sees about 7,500 visits a year
+(3 x ~10 a day x 250 days); if one payer is a sixth of them, 1,250 visits x $4 = $5,000 a year from
+closing the gap in one renegotiation. A tenth of that is $500. The sibling msp-house-index drew 10
+checkouts and 0 payments at $100 (2026-10-11 to 10-12), so the price is the thing under test.
+
 ## Who it was built for
 
 Mason Richlen, DPT, co-owner of [Maverick Physiotherapy](https://www.google.com/search?q=Maverick+Physiotherapy+Saint+Paul)
@@ -126,8 +163,9 @@ Physical-Therapy-Market-Analysis (DuckDB)  ──precompute.py──▶  site/da
   `pipeline/precompute.py`, which writes:
   - `site/data/meta.json` — payers, counts, file dates, code gloss, the default clinic
   - `site/data/clinics.json` — the search list
-  - `site/data/payers/<payer>.json` — market stats per code + one rate per clinic per code
-- `site/` is static. No database at request time; the page fetches one payer
+  - `private/payers/<payer>.json` — market stats per code + one rate per clinic per code (gitignored; served by `/api/data` behind the paywall, see "The paywall")
+  - `site/data/market.json` — the public aggregates `scripts/build_public.py` derives from them
+- `site/` is static plus five small functions (`site/api/`). No database at request time; the page fetches one payer
   slice at a time.
 - `scripts/check_slices.py` recomputes every median from the per-clinic rates
   and fails if `meta.json` disagrees with a slice.

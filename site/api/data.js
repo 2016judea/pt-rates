@@ -1,4 +1,4 @@
-// GET /api/data -> the full table (every clinic's rates, every payer), gzipped JSON.
+// GET /api/data -> the full table (private/bundle/full.json.gz), gzipped JSON.
 // Password in the x-password header (or ?pw=). The data is bundled with this function
 // (api/_full/, uploaded by scripts/deploy.py from private/bundle/), never in public site/.
 const fs = require("fs");
