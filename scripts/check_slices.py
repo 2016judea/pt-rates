@@ -24,7 +24,7 @@ check(meta["default_clinic"] in ids, "default clinic missing from clinics.json")
 check(len(meta["payers"]) >= 1, "no payers")
 total_bytes = 0
 for p in meta["payers"]:
-    f = DATA / "payers" / f"{p['slug']}.json"
+    f = DATA.parent.parent / "private" / "payers" / f"{p['slug']}.json"
     check(f.exists(), f"missing {f}")
     total_bytes += f.stat().st_size
     d = json.loads(f.read_text())
@@ -40,6 +40,7 @@ for p in meta["payers"]:
     for c in clinics:
         has = c["id"] in d["clinics"] and any(k in d["market"] for k in d["clinics"][c["id"]])
         check(has == (p["name"] in c["payers"]), f"{c['id']} payer flag for {p['name']} is wrong")
+check(not (DATA / "payers").exists(), "site/data/payers/ exists: the full rates must never ship statically")
 check(total_bytes < 3_000_000, f"payer slices total {total_bytes:,} bytes; split or trim")
 for c in clinics:
     check(c["name"] and c["id"], f"clinic with empty name/id: {c}")

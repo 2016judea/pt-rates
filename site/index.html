@@ -146,6 +146,10 @@ footer p{margin:6px 0}
 .legend i.cost{width:0;height:12px;border-left:2px dashed var(--below);border-radius:0}
 .row .nums .loss{color:var(--below);font-weight:800}
 .hidden{display:none!important}
+:root{--pw-bg:var(--surface);--pw-ink:var(--ink);--pw-soft:var(--ink-2);--pw-line:var(--line);--pw-card:var(--surface);--pw-accent:var(--aqua-deep)}
+#ctable tr.me td{background:var(--aqua-wash)}
+@media (max-width:600px){#ctable th:nth-child(3),#ctable td:nth-child(3){display:table-cell} #ctable th,#ctable td{padding:9px 7px;font-size:13px}}
+#ctable td.num.lo{color:var(--below);font-weight:800}
 @media (min-width:900px){
   .wrap{max-width:860px}
   .verdict{padding:30px 32px 26px}
@@ -306,6 +310,10 @@ if(me){posthog.opt_out_capturing();}else{if(p==="0")posthog.opt_in_capturing();p
   <h2>Per visit, by payer</h2>
   <div class="rows" id="vrows"></div>
   <div class="legend"><span><i class="dot"></i>this clinic</span><span><i class="line"></i>market median</span><span><i class="band"></i>middle half of clinics</span><span><i class="cost"></i>your cost</span></div>
+  <h2 id="ctHead">Clinics near you, per visit</h2>
+  <div class="tbl-wrap"><table id="ctable"></table></div>
+  <div id="ctLock"></div>
+  <div id="ctPay"></div>
   <h2 id="codesHead">Code by code</h2>
   <div class="tabs" id="tabs" role="tablist"></div>
   <section class="verdict" id="verdict" aria-live="polite"></section>
@@ -323,6 +331,7 @@ if(me){posthog.opt_out_capturing();}else{if(p==="0")posthog.opt_in_capturing();p
   <h2>Market median by code</h2>
   <div class="tbl-wrap"><table id="mtable"></table></div>
 </div>
+<div id="paywall"></div>
 
 <h2>Where this comes from</h2>
 <div class="card" id="sources"></div>
@@ -334,12 +343,15 @@ if(me){posthog.opt_out_capturing();}else{if(p==="0")posthog.opt_in_capturing();p
 </footer>
 </div>
 
+<script src="/paywall.js"></script>
 <script>
 (() => {
 const $ = id => document.getElementById(id);
 const fmt = n => '$' + Number(n).toFixed(2);
 const pct = (a, b) => Math.round((a - b) / b * 100);
-const state = { meta: null, clinics: [], payers: {}, clinic: null, payer: null, active: -1 };
+const state = { meta: null, clinics: [], payers: {}, clinic: null, payer: null, active: -1, full: null, market: null, preview: {} };
+// /for/<token>/ is a page made for one clinic: the token rides in the PATH so analytics keep it.
+const TOKEN = (location.pathname.match(/^\/for\/([a-z0-9]{6,16})\/?$/) || [])[1] || null;
 
 // theme
 const root = document.documentElement;
@@ -350,19 +362,38 @@ $('theme').onclick = () => { root.dataset.theme = isDark() ? 'light' : 'dark'; t
 paintTheme();
 
 async function load() {
-  const [meta, clinics, visit] = await Promise.all([fetch('data/meta.json').then(r => r.json()), fetch('data/clinics.json').then(r => r.json()), fetch('data/visit.json').then(r => r.json())]);
-  state.meta = meta; state.clinics = clinics; state.visit = visit;
+  const [meta, clinics, visit, market] = await Promise.all(['meta', 'clinics', 'visit', 'market'].map(f => fetch(`/data/${f}.json`).then(r => r.json())));
+  state.meta = meta; state.clinics = clinics; state.visit = visit; state.market = market;
+  await Paywall.init({ slot: $('paywall'), ctx: TOKEN ? { token: TOKEN } : {}, onUnlock: async d => {
+    state.full = d; state.payers = {}; state.mix = null;
+    document.querySelector('header .brand small').innerHTML = '<span class="pw-unl">Full table unlocked</span>';
+    if (state.clinic) await selectClinic(state.clinic, false); else await showMarket();
+  } });
   const sp = new URLSearchParams(location.search);
   state.minutes = visit.minutes.some(m => m.min === +sp.get('min')) ? +sp.get('min') : visit.default_minutes;
   state.cost = sp.has('cost') && isFinite(parseFloat(sp.get('cost'))) ? parseFloat(sp.get('cost')) : visit.example_cost.value;
   const inZips = meta.zip_prefixes.map(z => z + 'xx').join(', ');
   $('hint').textContent = `${clinics.length} PT clinics in zips ${inZips}. Type a name, or leave it blank for the whole market.`;
   renderSources();
-  const want = new URLSearchParams(location.search).get('clinic') || meta.default_clinic;
+  let want = new URLSearchParams(location.search).get('clinic') || meta.default_clinic;
+  if (TOKEN) { const p = await preview(null).catch(() => null); if (p) want = p.clinic; }
   const c = clinics.find(x => x.id === want);
-  if (c) selectClinic(c, false); else showMarket();
+  if (c) await selectClinic(c, false); else await showMarket();
 }
-const payerFile = slug => state.payers[slug] || (state.payers[slug] = fetch(`data/payers/${slug}.json`).then(r => r.json()));
+// The free slice: one clinic's own rates (and four neighbours') from /api/preview, against the
+// market's aggregates in /data/market.json. Once unlocked, the full table from /api/data.
+function preview(id) {
+  const k = id || 'for:' + TOKEN;
+  return state.preview[k] || (state.preview[k] = fetch(id ? `/api/preview?clinic=${encodeURIComponent(id)}` : `/api/preview?for=${TOKEN}`)
+    .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(p => { state.preview[p.clinic] = Promise.resolve(p); Paywall.track('preview_open', { clinic: p.clinic }); return p; })
+    .catch(e => { delete state.preview[k]; throw e; }));
+}
+async function payerFile(slug) {
+  if (state.full) return state.full.payers[slug];
+  const m = state.market[slug], p = state.clinic ? await preview(state.clinic.id).catch(() => null) : null;
+  return { payer: m.payer, market: m.market, visit_market: m.visit_market, partial: true, clinics: p?.payers[slug]?.clinics || {}, above: p?.payers[slug]?.above, neighbours: p?.neighbours || [] };
+}
 
 // ---- search -------------------------------------------------------------
 const q = $('q'), menu = $('menu'), search = $('search');
@@ -411,6 +442,7 @@ async function selectClinic(c, push) {
   const missing = state.meta.payers.map(p => p.name).filter(n => !c.payers.includes(n));
   $('missingPayers').textContent = missing.length ? `${missing.join(' and ')} publish${missing.length === 1 ? 'es' : ''} no rate for ${c.name} — either not in network, or not in the file.` : '';
   renderKnobs();
+  Paywall.mount($('ctPay'));
   await Promise.all([renderVisit(), renderClinic()]);
 }
 function renderTabs(el, names, selected, enabled, onpick) {
@@ -471,6 +503,8 @@ async function renderClinic() {
   }
 }
 function aboveYou(data, mine, codes) {
+  if (data.partial) { const a = data.above; if (!a) return ''; const k = state.meta.codes.find(x => x.code === a.code) || { short: a.code };
+    return `<div class="stat"><b>${a.n} of ${a.of}</b><span>clinics paid more than you for ${esc(k.short.toLowerCase())} (top: ${fmt(a.max)})</span></div>`; }
   // when nothing is below the median: how many clinics are paid MORE than you on the core code
   const k = ['97110', '97140', '97530', '97161'].map(c => codes.find(x => x.code === c)).find(Boolean) || codes[0];
   const you = mine[k.code], m = data.market[k.code];
@@ -514,6 +548,7 @@ function perVisit(rates, u) {
 }
 function quant(sorted, p) { const i = (sorted.length - 1) * p, lo = Math.floor(i), hi = Math.ceil(i); return sorted[lo] + (sorted[hi] - sorted[lo]) * (i - lo); }
 function visitMarket(data, u) {
+  if (data.partial) return state.mix ? null : data.visit_market[String(state.minutes)] || null;
   const vals = Object.values(data.clinics).map(r => perVisit(r, u)).filter(v => v != null).sort((a, b) => a - b);
   if (vals.length < 3) return null;
   return { median: quant(vals, .5), p25: quant(vals, .25), p75: quant(vals, .75), min: vals[0], max: vals[vals.length - 1], n: vals.length, vals };
@@ -533,7 +568,7 @@ function renderKnobs() {
     <div class="knob"><label>Visit length</label><div class="tabs" id="mins" role="tablist" aria-label="Visit length">${v.minutes.map(m => `<button type="button" role="tab" data-min="${m.min}" aria-selected="${!state.mix && m.min === state.minutes}">${m.min} min</button>`).join('')}</div></div>
     <details id="mixbox"${state.mix ? ' open' : ''}><summary>${state.mix ? '<b>Your own visit mix</b>' : `<b>${+totalUnits(u).toFixed(1)} units</b>, split ${mixLine}`}</summary>
       <p style="margin:8px 0 0;font-size:13px">The split is how Twin Cities physical therapists billed Medicare in 2024 (${v.providers.toLocaleString()} therapists, ${v.timed_units.toLocaleString()} treatment units; <a href="${esc(v.source_url)}" target="_blank" rel="noopener">CMS</a>). Minutes become units by ${esc(v.minutes_rule)}. The $${v.example_cost.value} cost is an example: <a href="${esc(v.example_cost.url)}" target="_blank" rel="noopener">${esc(v.example_cost.who)}</a>, “${esc(v.example_cost.quote)}” Type your own.</p>
-      <div class="mix">${v.codes.map(k => `<div><span>${esc(gloss(k.code))} · ${k.code}</span><input type="number" inputmode="decimal" min="0" step="0.1" data-code="${k.code}" value="${+u[k.code].toFixed(2)}" aria-label="Units of ${esc(gloss(k.code))} per visit"></div>`).join('')}</div>
+      ${state.full ? `<div class="mix">${v.codes.map(k => `<div><span>${esc(gloss(k.code))} · ${k.code}</span><input type="number" inputmode="decimal" min="0" step="0.1" data-code="${k.code}" value="${+u[k.code].toFixed(2)}" aria-label="Units of ${esc(gloss(k.code))} per visit"></div>`).join('')}</div>` : Paywall.lockRow('Price your own visit mix against every clinic')}
       ${state.mix ? '<button type="button" class="linkbtn" id="mixreset">Back to the Medicare mix</button>' : ''}
     </details>`;
   const cost = $('cost');
@@ -603,12 +638,34 @@ async function renderVisit() {
     el.innerHTML = `<div class="top"><span class="name" style="font-size:14px">${esc(missing.join(' and '))}: no rate on file for ${who}.</span></div>`;
     rows.appendChild(el);
   }
+  if (tok === state.vtok) await renderClinicTable(u);
+}
+// The sector table: every clinic (paid) or you and four neighbours (free), one price per payer
+// for the same visit. Lowest per column in red.
+async function renderClinicTable(u) {
+  const cols = [];
+  for (const pm of state.meta.payers) { const d = await payerFile(pm.slug); if (visitMarket(d, u)) cols.push([pm, d]); }
+  const me = state.clinic.id;
+  let ids;
+  if (state.full) ids = state.clinics.map(c => c.id).filter(id => cols.some(([, d]) => perVisit(d.clinics[id] || {}, u) != null));
+  else ids = [me, ...((await preview(me).catch(() => ({ neighbours: [] }))).neighbours)];
+  const val = (id, d) => perVisit(d.clinics[id] || {}, u);
+  const key = id => { const v = cols.map(([, d]) => val(id, d)).find(x => x != null); return v == null ? -1 : v; };
+  if (state.full) ids.sort((a, b) => key(b) - key(a));
+  const lo = cols.map(([, d]) => { const vs = ids.map(id => val(id, d)).filter(v => v != null); return vs.length > 1 ? Math.min(...vs) : null; });
+  const byId = Object.fromEntries(state.clinics.map(c => [c.id, c]));
+  $('ctHead').textContent = state.full ? `Every clinic, ${visitLabel(u)} · ${ids.length}` : `Clinics near you, ${visitLabel(u)}`;
+  $('ctable').innerHTML = `<thead><tr><th>Clinic</th>${cols.map(([pm]) => `<th>${esc(pm.name)}</th>`).join('')}</tr></thead><tbody>` +
+    ids.map(id => { const c = byId[id] || { name: id, city: '' }; return `<tr class="${id === me ? 'me' : ''}"><td class="name"><b>${esc(id === me ? 'You · ' + c.name : c.name)}</b><span>${esc(c.city)}</span></td>${cols.map(([, d], i) => { const v = val(id, d); return `<td class="num${v != null && v === lo[i] ? ' lo' : ''}">${v == null ? '—' : fmt(v)}</td>`; }).join('')}</tr>`; }).join('') + '</tbody>';
+  const more = state.clinics.length - ids.length;
+  $('ctLock').innerHTML = state.full ? '' : Paywall.lockRow(`${more} more clinics, every payer, side by side`);
 }
 
 // ---- market view --------------------------------------------------------
 async function showMarket() {
   state.clinic = null; syncUrl();
   $('clinicView').classList.add('hidden'); $('marketView').classList.remove('hidden');
+  Paywall.mount($('paywall'));
   const names = state.meta.payers.map(p => p.name);
   state.payer = names.includes(state.payer) ? state.payer : names[0];
   renderTabs($('mtabs'), names, state.payer, null, async n => { state.payer = n; await renderMarket(); });

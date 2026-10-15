@@ -5,3 +5,7 @@ __pycache__/
 .DS_Store
 /pipeline/data/
 pipeline/cache/
+/private/
+.env
+/outreach/round1/
+site/api/_full

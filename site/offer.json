@@ -1,0 +1,11 @@
+{
+  "product": "pt-rates",
+  "site": "https://pt-rates.vercel.app",
+  "price_usd": 500,
+  "launch": 1792022400,
+  "name": "PT Rates: the full table",
+  "short": "PT Rates",
+  "thing": "full table",
+  "description": "Every Twin Cities PT clinic's published rate, per payer, per code and per visit, side by side.",
+  "line": "The full table, every clinic and every payer, is $500, once."
+}

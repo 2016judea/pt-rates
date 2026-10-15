@@ -39,14 +39,21 @@ def request(url, token, data=None, headers=None):
         return e.code, json.loads(e.read() or b"{}")
 
 
+BUNDLE = ROOT.parent / "private" / "bundle"  # the paid table: uploaded as api/_full/, read by the functions only
+
+
 def collect():
+    assert (BUNDLE / "full.json.gz").exists(), "run scripts/build_public.py: private/bundle/ is what the paywall serves"
     for path in sorted(ROOT.rglob("*")):
         if not path.is_file():
             continue
         rel = path.relative_to(ROOT)
-        if any(part in SKIP_DIRS for part in rel.parts) or rel.name in SKIP_FILES:
+        if any(part in SKIP_DIRS for part in rel.parts) or rel.name in SKIP_FILES or "_full" in rel.parts:
             continue
         yield rel, path
+    for path in sorted(BUNDLE.rglob("*")):
+        if path.is_file():
+            yield Path("api/_full") / path.relative_to(BUNDLE), path
 
 
 def main():
@@ -73,7 +80,7 @@ def main():
     payload = json.dumps({
         "name": PROJECT, "project": PROJECT, "target": "production",
         "files": files,
-        "projectSettings": {"framework": None, "outputDirectory": None},
+        "projectSettings": {"framework": None, "buildCommand": "echo build", "outputDirectory": ".", "installCommand": "echo skip"},
     }).encode()
     code, out = request(
         f"https://api.vercel.com/v13/deployments?teamId={TEAM}&skipAutoDetectionConfirmation=1",
@@ -90,6 +97,10 @@ def main():
         state = d.get("readyState")
         if state in ("READY", "ERROR", "BLOCKED", "CANCELED"):
             print(f"  {state} {d.get('errorMessage') or ''}")
+            _, prj = request(f"https://api.vercel.com/v9/projects/{PROJECT}?teamId={TEAM}", token)
+            if not (prj.get("webAnalytics") or {}).get("enabledAt"):
+                print("  analytics", request(f"https://api.vercel.com/web/insights/toggle?projectId={prj['id']}&teamId={TEAM}", token,
+                                             data=b'{"value":true}', headers={"Content-Type": "application/json"}))
             sys.exit(0 if state == "READY" else 1)
     sys.exit("timed out waiting for the deployment to settle")
 

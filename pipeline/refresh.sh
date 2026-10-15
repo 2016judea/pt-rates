@@ -33,3 +33,4 @@ if [ "$step" = "bcbs" ]; then
 fi
 (cd "$HERE" && "$PY" pipeline/precompute.py --db "$PIPE/data/rates.duckdb")
 (cd "$HERE" && python3 scripts/check_slices.py) || true
+(cd "$HERE" && python3 scripts/build_public.py)

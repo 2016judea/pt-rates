@@ -35,6 +35,7 @@ import yaml
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 OUT = ROOT / "site" / "data"
+PRIV = ROOT / "private" / "payers"  # the full per-clinic rates: never served statically (scripts/build_public.py)
 PIPE = Path.home() / "Desktop" / "pt-rates-data"
 
 DEFAULT_CLINIC = "1407809494"  # Therapy Partners, Inc., Saint Paul: independent, in all three payers, a mixed verdict
@@ -231,8 +232,8 @@ def main():
             market[k] = {"median": round(statistics.median(vals), 2), "p25": round(q[0], 2), "p75": round(q[2], 2),
                          "min": vals[0], "max": vals[-1], "n": len(vals)}
         s = slug(payer)
-        (OUT / "payers").mkdir(parents=True, exist_ok=True)
-        (OUT / "payers" / f"{s}.json").write_text(json.dumps({"payer": payer, "market": market, "clinics": by_clinic}, separators=(",", ":")))
+        PRIV.mkdir(parents=True, exist_ok=True)
+        (PRIV / f"{s}.json").write_text(json.dumps({"payer": payer, "market": market, "clinics": by_clinic}, separators=(",", ":")))
         m = payer_meta[payer]
         payers_out.append({"name": payer, "slug": s, "rows": m["rows"], "npis": len(m["npis"]), "clinics": len(by_clinic),
                            "codes": len(market), "last_updated": m["last_updated"].isoformat() if m["last_updated"] else None,
