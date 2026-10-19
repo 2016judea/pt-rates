@@ -51,6 +51,8 @@ def fetch(prefixes):
                     if full and postal.endswith("*") and len(postal) < 6:
                         queue.extend(f"{postal[:-1]}{d}*" for d in range(10))
                         continue
+                    if full:  # a 5-digit zip cannot be split further: say so rather than ship 1,200 of more
+                        print(f"  WARNING: {desc} {postal} hit the 1,200-row NPPES ceiling; rows beyond it were not fetched", flush=True)
                     for r in res:
                         npi = r["number"]
                         if npi in providers:

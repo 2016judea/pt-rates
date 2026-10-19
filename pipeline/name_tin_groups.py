@@ -38,12 +38,21 @@ def norm(a):
 
 
 def orgs_in_zip(client, zip5):
+    """Every NPI-2 whose practice LOCATION is in zip5. The NPPES API clamps skip at 1,000
+    (limit 200), so one query can never return more than 1,200 rows; a bare postal_code
+    match also counts MAILING addresses, which pushed 55344 and 55435 past that ceiling
+    (measured 2026-10-18) while this script only ever reads the LOCATION address."""
     out, skip = [], 0
     while True:
-        r = client.get(API, params={"version": "2.1", "postal_code": zip5, "enumeration_type": "NPI-2", "limit": 200, "skip": skip})
+        r = client.get(API, params={"version": "2.1", "postal_code": zip5, "enumeration_type": "NPI-2",
+                                    "address_purpose": "LOCATION", "limit": 200, "skip": skip})
         res = r.json().get("results", [])
         out.extend(res)
-        if len(res) < 200 or skip >= 1000:
+        if len(res) < 200:
+            return out
+        if skip >= 1000:
+            print(f"  WARNING: zip {zip5} has more than 1,200 organisations at the NPPES API ceiling; "
+                  f"orgs beyond the first 1,200 are not searched", flush=True)
             return out
         skip += 200
         time.sleep(0.1)
