@@ -42,6 +42,17 @@ def request(url, token, data=None, headers=None):
 BUNDLE = ROOT.parent / "private" / "bundle"  # the paid table: uploaded as api/_full/, read by the functions only
 
 
+# Only public/ is static (vercel.json outputDirectory). With outputDirectory "." every uploaded
+# file was a static URL, so the paid bundle at api/_full/ was one path-spelling away from public:
+# the /api/_full/ redirect matches the raw path only, and on four sibling products
+# /api/%5Ffull/<f>, /api/_full%2F<f> and /api/_full/<f>/ served the bundle (curl, 2026-10-19).
+# Static files go up under public/; api/ and a root copy of what the functions read stay outside.
+def upload_paths(rel):
+    if rel.parts[0] == "api" or str(rel) == "vercel.json":
+        return [rel]
+    return [Path("public") / rel, rel]
+
+
 def collect():
     assert (BUNDLE / "full.json.gz").exists(), "run scripts/build_public.py: private/bundle/ is what the paywall serves"
     for path in sorted(ROOT.rglob("*")):
@@ -50,7 +61,8 @@ def collect():
         rel = path.relative_to(ROOT)
         if any(part in SKIP_DIRS for part in rel.parts) or rel.name in SKIP_FILES or "_full" in rel.parts:
             continue
-        yield rel, path
+        for out in upload_paths(rel):
+            yield out, path
     for path in sorted(BUNDLE.rglob("*")):
         if path.is_file():
             yield Path("api/_full") / path.relative_to(BUNDLE), path
@@ -80,7 +92,7 @@ def main():
     payload = json.dumps({
         "name": PROJECT, "project": PROJECT, "target": "production",
         "files": files,
-        "projectSettings": {"framework": None, "buildCommand": "echo build", "outputDirectory": ".", "installCommand": "echo skip"},
+        "projectSettings": {"framework": None, "buildCommand": "echo build", "outputDirectory": "public", "installCommand": "echo skip"},
     }).encode()
     code, out = request(
         f"https://api.vercel.com/v13/deployments?teamId={TEAM}&skipAutoDetectionConfirmation=1",
