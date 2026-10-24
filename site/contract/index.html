@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PT Rates · Contract Review</title>
+<meta name="description" content="A fixed-price review of a physical therapy clinic's fee schedule against the Minnesota market, per payer and per billing code, with the renegotiation case for each payer. $2,500.">
+<meta name="color-scheme" content="light dark">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230FA3A3'/%3E%3Cpath d='M8 20h4v-6H8zm6 0h4V9h-4zm6 0h4v-9h-4z' fill='%23EAFBF9'/%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#EEF9F8; --surface:#FFFFFF; --surface-2:#DDF4F1; --ink:#07302F; --ink-2:#3C6765; --ink-3:#6E9896;
+  --line:#BFE4E0; --line-2:#9ED6D0;
+  --aqua:#0FA3A3; --aqua-deep:#067474; --aqua-wash:#CBF1EC;
+  --below:#C8503B; --below-wash:#FBE6E1;
+  --radius:14px; --shadow:0 1px 2px rgba(7,48,47,.06),0 8px 24px -12px rgba(7,48,47,.18);
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+  --bg:#05191A; --surface:#0A2525; --surface-2:#0E3233; --ink:#E4FAF7; --ink-2:#9ECBC6; --ink-3:#6E9E9A;
+  --line:#164544; --line-2:#1F5B59; --aqua:#2FD6CF; --aqua-deep:#5BE3DC; --aqua-wash:#0E3A3A;
+  --below:#F28B76; --below-wash:#3A1A14; --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+}}
+:root[data-theme="dark"]{
+  --bg:#05191A; --surface:#0A2525; --surface-2:#0E3233; --ink:#E4FAF7; --ink-2:#9ECBC6; --ink-3:#6E9E9A;
+  --line:#164544; --line-2:#1F5B59; --aqua:#2FD6CF; --aqua-deep:#5BE3DC; --aqua-wash:#0E3A3A;
+  --below:#F28B76; --below-wash:#3A1A14; --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:500 16px/1.5 Manrope,system-ui,-apple-system,"Segoe UI",sans-serif;
+  background-image:radial-gradient(1200px 500px at 50% -200px,var(--aqua-wash),transparent 70%);min-height:100dvh}
+a{color:var(--aqua-deep)}
+.wrap{max-width:720px;margin:0 auto;padding:0 16px 56px}
+header{display:flex;align-items:center;justify-content:space-between;padding:18px 0 4px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;color:var(--ink);text-decoration:none}
+.brand i{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--aqua),var(--aqua-deep));display:inline-grid;place-items:center}
+.brand i svg{width:16px;height:16px;fill:#EAFBF9}
+.brand small{display:block;font-size:12px;font-weight:600;color:var(--ink-3)}
+header a.free{font-size:13px;font-weight:700;text-decoration:none}
+.kicker{margin:22px 0 0;font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--aqua-deep)}
+h1{margin:8px 0 0;font-size:clamp(28px,6.4vw,42px);line-height:1.08;letter-spacing:-.025em;font-weight:800}
+.lede{margin:12px 0 0;font-size:17px;color:var(--ink-2);max-width:36em}
+.price{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:18px 0 0}
+.btn{appearance:none;border:0;border-radius:12px;background:var(--ink);color:var(--bg);font:800 17px Manrope,system-ui;padding:15px 22px;min-height:52px;cursor:pointer}
+.btn:disabled{opacity:.6}
+.price span{font-weight:700;color:var(--ink-2);font-size:15px}
+h2{margin:36px 0 10px;font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px}
+.card + .card{margin-top:10px}
+.card h3{margin:0;font-size:18px;line-height:1.25;letter-spacing:-.01em}
+.card .sub{margin:4px 0 0;font-size:14px;color:var(--ink-2)}
+.row{margin-top:14px}
+.row b.big{font-size:22px;letter-spacing:-.01em}
+.row .note{font-size:14px;color:var(--ink-2)}
+.row .note .neg{color:var(--below);font-weight:800}
+.row .note .pos{color:var(--aqua-deep);font-weight:800}
+.strip{position:relative;height:30px;margin:10px 0 2px}
+.strip .rail{position:absolute;left:0;right:0;top:13px;height:4px;border-radius:2px;background:var(--surface-2)}
+.strip .iqr{position:absolute;top:9px;height:12px;border-radius:6px;background:var(--line-2)}
+.strip .med{position:absolute;top:5px;width:3px;height:20px;margin-left:-1.5px;border-radius:2px;background:var(--ink)}
+.strip .you{position:absolute;top:6px;width:18px;height:18px;margin-left:-9px;border-radius:50%;background:var(--below);border:3px solid var(--surface);box-shadow:0 0 0 1px var(--below)}
+.strip .you.up{background:var(--aqua);box-shadow:0 0 0 1px var(--aqua)}
+.ends{display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:var(--ink-3)}
+.facts{display:grid;gap:10px}
+.facts .card{margin-top:0}
+@media (min-width:700px){.facts{grid-template-columns:repeat(3,1fr)}}
+.fact b{display:block;font-size:32px;letter-spacing:-.02em;color:var(--aqua-deep)}
+.fact p{margin:6px 0 0;font-size:14px;color:var(--ink-2)}
+ol.get{margin:0;padding:0;list-style:none;counter-reset:g}
+ol.get li{counter-increment:g;position:relative;padding:12px 0 12px 40px;border-top:1px solid var(--line)}
+ol.get li:first-child{border-top:0}
+ol.get li::before{content:counter(g);position:absolute;left:0;top:11px;width:28px;height:28px;border-radius:50%;background:var(--aqua-wash);color:var(--aqua-deep);font-weight:800;display:grid;place-items:center;font-size:14px}
+ol.get li b{display:block}
+ol.get li span{font-size:14px;color:var(--ink-2)}
+.pay{margin-top:36px;background:var(--ink);color:var(--bg);border-radius:var(--radius);padding:20px 18px}
+.pay p.line{margin:0;font-size:21px;font-weight:800;line-height:1.25}
+.pay p.sm{margin:8px 0 0;font-size:14px;opacity:.85}
+.pay .btn{background:var(--bg);color:var(--ink);margin-top:16px;width:100%}
+@media (min-width:640px){.pay .btn{width:auto}}
+.co{margin-top:14px;border-radius:10px;overflow:hidden;background:#fff}
+.co:empty{display:none}
+.err{margin:10px 0 0;font-size:14px}
+.done{margin-top:36px}
+.src{margin-top:28px;font-size:13px;color:var(--ink-3)}
+.src a{color:inherit}
+.muted{color:var(--ink-3);font-size:14px}
+</style>
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};</script><script defer src="/_vercel/insights/script.js"></script><script>/* bm-visitor-id — who read this page, on how many days, and what they touched.
+   Source of truth: bricks/scripts/outreach/reader_events.js (inlined by visitor_id.py
+   into every /for/ page; pasted verbatim into buying-window, pt-rates, salon-rates).
+
+   PostHog keeps an anonymous distinct_id in localStorage + cookie, so a return
+   visit on another day is the same reader (Vercel's hash rotates daily). Every
+   event also goes to Vercel custom events (va.track) so the dashboard shows it.
+
+   Events: $pageview (auto), download, sort, filter, row_click, row_expand,
+   link_click, scroll_depth (25/50/75/100), time_on_page (seconds visible). */
+(function () {
+  var KEY = 'phc_yFgRGppL6H7DvhgZTQKbHdrY5oqnpLT482rrNYtLqnAx';
+  var q = [], ready = false;
+  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  function cut(v) { return String(v == null ? '' : v).replace(/\s+/g, ' ').trim().slice(0, 120); }
+  function send(name, props, beacon) {
+    props = props || {};
+    try { window.va('event', { name: name, data: props }); } catch (e) {}
+    if (ready) { try { posthog.capture(name, props, beacon ? { transport: 'sendBeacon' } : undefined); } catch (e) {} }
+    else q.push([name, props]);
+  }
+  /* The shared bm-posthog snippet in <head> owns loading, the ?me=1 opt-out and the
+     webdriver guard (2026-10-12). Defer to it; never load a second, unguarded copy. */
+  if (window.posthog && window.posthog.__SV) {
+    posthog.register({ path: location.pathname });
+    ready = true;
+    while (q.length) { var e = q.shift(); posthog.capture(e[0], e[1]); }
+  }
+
+  function label(el) {
+    return cut(el.getAttribute('aria-label') || el.name || el.id || el.getAttribute('placeholder') || 'control');
+  }
+  function rowText(el) {
+    var k = el.querySelector('.a, .name, td, summary, b, strong');
+    return cut((k || el).textContent);
+  }
+
+  document.addEventListener('click', function (ev) {
+    var t = ev.target;
+    if (!t || !t.closest) return;
+    var a = t.closest('a[href]');
+    if (a) {
+      var h = a.getAttribute('href') || '';
+      if (a.hasAttribute('download') || /\.csv(\?|$)|\/api\/export/.test(h)) {
+        send('download', { file: cut(a.getAttribute('download') || h.split('?')[0].split('/').pop() || a.textContent), href: cut(h) });
+      } else {
+        send('link_click', { href: cut(a.href), text: cut(a.textContent) });
+      }
+      return;
+    }
+    var th = t.closest('th');
+    if (th) { send('sort', { column: cut(th.textContent) }); return; }
+    var opt = t.closest('[role=option]');
+    if (opt) { send('row_click', { row: cut((opt.firstElementChild || opt).textContent) }); return; }
+    var chip = t.closest('.chip, [aria-pressed], [role=tab]');
+    if (chip) {
+      var grp = chip.parentElement;
+      send('filter', { column: cut((grp && (grp.getAttribute('aria-label') || grp.id)) || 'chips'), value: cut(chip.textContent) });
+      return;
+    }
+    var pick = t.closest('button[data-id], button[data-slug], [data-row]');
+    if (pick) { send('row_click', { row: cut(pick.textContent) }); return; }
+    if (t.closest('summary')) return; /* counted by the toggle listener */
+    var row = t.closest('tbody tr, ol > li, ul > li, tr[class]');
+    if (row && !t.closest('nav, header, footer')) { send('row_click', { row: rowText(row) }); return; }
+    var b = t.closest('button');
+    if (b) send('button', { id: cut(b.id || b.textContent) });
+  }, true);
+
+  document.addEventListener('change', function (ev) {
+    var el = ev.target;
+    if (!el || el.tagName !== 'SELECT') return;
+    var v = el.options[el.selectedIndex] ? el.options[el.selectedIndex].text : el.value;
+    send(/sort|order/i.test(el.id + ' ' + el.name) ? 'sort' : 'filter', { column: label(el), value: cut(v) });
+  }, true);
+
+  var typing = {};
+  document.addEventListener('input', function (ev) {
+    var el = ev.target;
+    if (!el || el.tagName !== 'INPUT' || !/^(search|text)$/.test(el.type)) return;
+    var k = label(el);
+    clearTimeout(typing[k]);
+    typing[k] = setTimeout(function () { if (el.value.trim()) send('filter', { column: k, value: cut(el.value) }); }, 900);
+  }, true);
+
+  document.addEventListener('toggle', function (ev) {
+    var d = ev.target;
+    if (d && d.tagName === 'DETAILS' && d.open) {
+      var sm = d.querySelector('summary');
+      send('row_expand', { row: cut(sm ? sm.textContent : d.textContent) });
+    }
+  }, true);
+
+  var marks = [25, 50, 75, 100], hit = 0;
+  function depth() {
+    var de = document.documentElement;
+    var seen = (window.scrollY + window.innerHeight) / Math.max(de.scrollHeight, 1) * 100;
+    while (marks.length && seen >= marks[0] - 1) { hit = marks.shift(); send('scroll_depth', { depth: hit }); }
+  }
+  window.addEventListener('scroll', depth, { passive: true });
+  window.addEventListener('load', depth);
+
+  var shown = 0, since = document.visibilityState === 'visible' ? Date.now() : 0;
+  function flush() {
+    if (since) { shown += Date.now() - since; since = 0; }
+    if (shown >= 1000) send('time_on_page', { seconds: Math.round(shown / 1000), max_depth: hit }, true);
+    shown = 0;
+  }
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'hidden') flush(); else since = Date.now();
+  });
+  window.addEventListener('pagehide', flush);
+})();</script>
+<!-- bm-posthog:begin v2 — shared across every Vercel prototype; source ~/.claude/skills/site-analytics/posthog_snippet.html. ?me=1 opts this browser out on this site (?me=0 undoes); ?me=1&next=host1,host2 walks the opt-out across sites; headless (navigator.webdriver) never loads it. -->
+<script>
+(function(w,d){var S="pt-rates",K="bm_me",me=false,u,p,n;
+try{u=new URLSearchParams(location.search);p=u.get("me");n=u.get("next");}catch(e){}
+try{if(p==="1"){localStorage.setItem(K,"1");}else if(p==="0"){localStorage.removeItem(K);}}catch(e){}
+if(p==="1"){d.cookie=K+"=1; path=/; max-age=63072000; SameSite=Lax";}else if(p==="0"){d.cookie=K+"=; path=/; max-age=0; SameSite=Lax";}
+try{me=localStorage.getItem(K)==="1";}catch(e){}
+if(!me&&/(?:^|; )bm_me=1/.test(d.cookie))me=true;
+if(p==="1"&&n){var h=n.split(","),f=h.shift();if(/^[a-z0-9.-]+$/.test(f)&&(f.slice(-11)===".vercel.app"||f==="brickandmortar.dev"||f==="readglean.com")){location.replace("https://"+f+"/?me=1"+(h.length?"&next="+h.join(","):""));}}
+if(navigator.webdriver===true)return;
+!function(t,e){var o,n,p,r;e.__SV||(w.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once unregister identify setPersonProperties reset get_distinct_id get_session_id alias set_config startSessionRecording stopSessionRecording opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing captureException getFeatureFlag isFeatureEnabled onFeatureFlags".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(d,w.posthog||[]);
+posthog.init("phc_yFgRGppL6H7DvhgZTQKbHdrY5oqnpLT482rrNYtLqnAx",{api_host:"https://us.i.posthog.com",person_profiles:"identified_only",persistence:"localStorage+cookie",opt_out_capturing_by_default:me});
+if(me){posthog.opt_out_capturing();}else{if(p==="0")posthog.opt_in_capturing();posthog.register({site:S});}
+})(window,document);
+</script>
+<!-- bm-posthog:end -->
+</head>
+<body>
+<div class="wrap">
+<header>
+  <a class="brand" href="/"><i><svg viewBox="0 0 16 16"><path d="M1 13h3V8H1zm5 0h3V3H6zm5 0h3V6h-3z"/></svg></i><span>PT Rates<small>Minnesota · per payer, per code</small></span></a>
+  <a class="free" href="/">Free lookup →</a>
+</header>
+
+<p class="kicker" id="kicker">Fixed-price review</p>
+<h1>What each payer pays you, against what it pays everyone else.</h1>
+<p class="lede">A review of your fee schedule against the Minnesota market, per payer and per billing code. Then the case to bring each payer at renewal.</p>
+<div class="price"><button class="btn" type="button" data-book>Book it · $2,500</button><span>Fixed. Delivered in 10 business days.</span></div>
+
+<div id="slice"></div>
+
+<h2>What 9.24 million Minnesota PT rates say</h2>
+<div class="facts">
+  <div class="card fact"><b>2.49×</b><p>HealthPartners pays its 90th-percentile group 2.49× its 10th for the same 15 minutes of exercise (97110): $62.49 against $25.08.</p></div>
+  <div class="card fact"><b>0.26</b><p>A group's price with one insurer barely predicts its price with the other (correlation 0.26, 70 groups with both). Rates follow who asked.</p></div>
+  <div class="card fact"><b>3.1×</b><p>Billed from a hospital outpatient department, 97110 pays a median $78.93 at HealthPartners. Billed by a clinic, $25.08.</p></div>
+</div>
+
+<h2>What you get</h2>
+<div class="card">
+<ol class="get">
+  <li><b>Your rates, code by code, against the market</b><span>For BCBS Minnesota and HealthPartners: where each of your codes sits against every clinic in the same insurer's file, median and spread.</span></li>
+  <li><b>The dollars, at your volume</b><span>What the gap to the median is worth a year, per payer, at your own visit count and code mix.</span></li>
+  <li><b>One page per payer</b><span>The codes to reopen, the market number for each, and the ask. Ready to send to the provider-relations contact.</span></li>
+</ol>
+</div>
+
+<h2>How it works</h2>
+<div class="card">
+<ol class="get">
+  <li><b>Book it below</b><span>One engagement covers one billing group (one tax ID). Buying for a client clinic works the same way.</span></li>
+  <li><b>Send your fee schedules</b><span>I write within one business day. An export or PDF of your contracted amounts is enough. No patient data, ever.</span></li>
+  <li><b>Ten business days later</b><span>The review and the per-payer pages land in your inbox. One round of questions by email is included.</span></li>
+</ol>
+<p class="muted">Covers BCBS Minnesota and HealthPartners in dollars. UCare publishes its PT codes as a percent of charges, so its page compares percents. Medica, UnitedHealthcare, Aetna and Cigna don't publish PT rates anyone can read per clinic, so they aren't in it.</p>
+</div>
+
+<section class="pay" id="pay">
+  <p class="line">$2,500, fixed. Delivered in 10 business days.</p>
+  <p class="sm">You also get the full table of every Twin Cities clinic's published rates the day you book.</p>
+  <button class="btn" type="button" data-book>Book it · $2,500</button>
+  <p class="err" id="err" role="alert"></p>
+  <div class="co" id="co"></div>
+</section>
+<section class="card done" id="done" hidden aria-live="polite"><h3>Confirming your booking…</h3><p class="sub"></p></section>
+
+<p class="src">Rates from the insurers' own Transparency in Coverage files (BCBS Minnesota, HealthPartners, UCare, June to October 2026). Visit mix from CMS Medicare 2024, Twin Cities physical therapists. By Aidan Jude, Brick &amp; Mortar · <a href="mailto:aidan@brickandmortar.dev">aidan@brickandmortar.dev</a> · <a href="https://randomaidan.substack.com/p/business-prototypes">why I build these</a></p>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const money = (n) => "$" + n.toFixed(2);
+const TOKEN = (location.pathname.match(/^\/contract\/for\/([a-z0-9]{6,16})\/?$/) || [])[1] || null;
+const PK = "pk_live_51TUvvcBzD4mN8eOD28H6oQkFwFHwF1SLtWxN1vHRmnSxntWFefgd33mEIVmjv8ekxWgkZft3OpPlzmVXMIeHPBwj003998hjTf";
+const ctx = { offer: "contract", token: TOKEN || "" };
+function track(name, props) {
+  const data = Object.assign({}, ctx, props || {});
+  try { window.va && window.va("event", { name, data }); } catch (e) {}
+  try { window.posthog && window.posthog.capture && window.posthog.capture(name, data); } catch (e) {}
+}
+
+// A range strip: rail from min to max, the middle half shaded, the median a tick, "you" a dot.
+function strip(m, you) {
+  const lo = Math.min(m.min, you ?? m.min), hi = Math.max(m.max, you ?? m.max), span = (hi - lo) || 1;
+  const x = (v) => ((v - lo) / span * 100).toFixed(2) + "%";
+  return `<div class="strip"><div class="rail"></div><div class="iqr" style="left:${x(m.p25)};width:calc(${x(m.p75)} - ${x(m.p25)} + 4px)"></div>
+    <div class="med" style="left:${x(m.median)}"></div>${you != null ? `<div class="you ${you >= m.median ? "up" : ""}" style="left:${x(you)}"></div>` : ""}</div>
+    <div class="ends"><span>${money(lo)}</span><span>median ${money(m.median)}</span><span>${money(hi)}</span></div>`;
+}
+
+function marketCard(market, title) {
+  const rows = Object.values(market).filter((p) => p.visit_market && p.visit_market["45"]).map((p) => {
+    const m = p.visit_market["45"];
+    return `<div class="row"><b>${esc(p.payer)}</b>
+      <div class="note">A 45-minute visit pays ${money(m.min)} to ${money(m.max)} across ${m.n} clinics. The top clinic gets ${(m.max / m.min).toFixed(1)}× the bottom.</div>${strip(m)}</div>`;
+  }).join("");
+  return `<h2>${esc(title)}</h2><div class="card"><h3>Same visit, same payer, same metro.</h3><p class="sub">Twin Cities clinics, a 45-minute visit at the market's own code mix.</p>${rows}</div>`;
+}
+
+function clinicCard(c) {
+  const rows = c.payers.map((p) => {
+    const gap = p.visit - p.median;
+    const note = Math.abs(gap) < 0.005
+      ? `Pays you <b>${money(p.visit)}</b> a 45-minute visit, the same as ${p.same - 1} other clinics in the file. <span class="neg">${p.more} get more.</span>`
+      : `Pays you <b>${money(p.visit)}</b> a 45-minute visit, ${gap < 0 ? `<span class="neg">${money(-gap)} under</span>` : `<span class="pos">${money(gap)} over</span>`} the median clinic. ${p.more} clinics get more. Below the median on ${p.below} of ${p.codes} codes.`;
+    return `<div class="row"><b>${esc(p.payer)}</b> <span class="muted">· ${p.clinics} clinics in the file</span>
+      <div class="note">${note}</div>${strip(p.market, p.visit)}</div>`;
+  }).join("");
+  return `<div class="card"><h3>${esc(c.name)}</h3><p class="sub">${esc(c.city)} · the insurers' own files, 2026</p>${rows}</div>`;
+}
+
+async function render() {
+  const market = await fetch("/data/market.json").then((r) => r.json()).catch(() => ({}));
+  let page = null;
+  if (TOKEN) page = await fetch(`/api/contract?for=${TOKEN}`).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+  const el = $("slice");
+  if (page) {
+    $("kicker").textContent = `Made for ${page.org}`;
+    ctx.segment = page.segment || "";
+    if (page.clinics && page.clinics.length) {
+      el.innerHTML = `<h2>${esc(page.org)}, in the insurers' own files</h2>` + page.clinics.map(clinicCard).join("") + `<p class="muted">The review does this for every code you bill, with your fee schedule as the source instead of the insurers' file.</p>`;
+    } else {
+      el.innerHTML = marketCard(market, page.headline || "The market your clients bill into");
+    }
+  } else {
+    el.innerHTML = marketCard(market, "The market you bill into");
+  }
+  track("contract_open", { has_slice: !!(page && page.clinics && page.clinics.length) });
+}
+
+const loadStripe = () => window.Stripe ? Promise.resolve() : new Promise((ok, no) => { const s = document.createElement("script"); s.src = "https://js.stripe.com/dahlia/stripe.js"; s.onload = ok; s.onerror = no; document.head.appendChild(s); });
+let co = null;
+async function book() {
+  const box = $("co"), err = $("err"), btns = document.querySelectorAll("[data-book]");
+  track("checkout_open");
+  $("pay").scrollIntoView({ behavior: "smooth", block: "start" });
+  if (co) return;
+  btns.forEach((b) => (b.disabled = true)); err.textContent = "";
+  try {
+    await loadStripe(); const st = window.Stripe(PK);
+    const opts = { fetchClientSecret: () => fetch("/api/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ offer: "contract", path: location.pathname }) })
+      .then((r) => r.json()).then((j) => { if (!j.clientSecret) throw new Error(j.error || "Checkout could not start."); return j.clientSecret; }) };
+    co = await (st.createEmbeddedCheckoutPage ? st.createEmbeddedCheckoutPage(opts) : st.initEmbeddedCheckout(opts));
+    co.mount(box);
+  } catch (x) {
+    co = null; err.textContent = "Checkout didn't load. Refresh and try again, or email aidan@brickandmortar.dev and I'll send an invoice.";
+  } finally { btns.forEach((b) => (b.disabled = false)); }
+}
+document.querySelectorAll("[data-book]").forEach((b) => b.addEventListener("click", book));
+
+async function confirmPaid(id) {
+  const box = $("done"), H = box.querySelector("h3"), T = box.querySelector("p");
+  box.hidden = false; $("pay").hidden = true; box.scrollIntoView({ block: "start" });
+  for (let i = 0; i < 6; i++) {
+    try {
+      const j = await fetch("/api/session-status?session_id=" + encodeURIComponent(id)).then((r) => r.json());
+      if (j.paid) { H.textContent = "Booked. Check your email."; T.innerHTML = `${j.email ? `Sent to <b>${esc(j.email)}</b>. ` : ""}I'll write within one business day for your fee schedules. Your receipt comes from Stripe.`; track("paid"); return; }
+      if (j.status === "expired" || j.error) break;
+    } catch (e) {}
+    await new Promise((r) => setTimeout(r, 2500));
+  }
+  H.textContent = "We couldn't confirm that payment yet";
+  T.innerHTML = `If you were charged, the confirmation is on its way to your email. Otherwise <a href="${esc(location.pathname)}">go back</a> and try again, or write to aidan@brickandmortar.dev.`;
+}
+const qs = new URLSearchParams(location.search), paid = qs.get("paid");
+if (paid) { history.replaceState(null, "", location.pathname); confirmPaid(paid); }
+render();
+</script>
+</body>
+</html>

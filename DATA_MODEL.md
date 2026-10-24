@@ -31,3 +31,27 @@ against their own cost per visit, not code by code.
 
 Verdict: the model fills for the payers we can read. The missing five payers are the
 standing gap (README "Next build"); not a reframe.
+
+## The contract engagement (2026-10-24)
+
+`grounded: 2026-10-24` — Aidan said yes to selling PT Rates as a fixed-price contract to the
+private sector, off the AHRQ Healthcare Choice proposal's findings. Page: `/contract/`.
+
+What the engagement adds to the model above is the buyer's **own fee schedule**, which they
+bring. That is what makes it fillable: the clinic's side no longer depends on whether a payer's
+file links its NPI to its PT rates.
+
+| Entity | Fields | Question it answers | Fillable? |
+|---|---|---|---|
+| Engagement | buyer, billing group (one tax ID), payers, booked date | What was bought, for whom? | Yes: Stripe session (`metadata.kind=contract`, `metadata.for=<token>`). |
+| Fee schedule | buyer × payer × code → contracted $ (or % of charges) | What am I actually contracted at? | Buyer brings it. No patient data. |
+| Market | payer × code → median, quartiles, n | What does this payer pay everyone else? | BCBS MN and HealthPartners in dollars (195 and 134 clinics). UCare in % of charges only. **UHC, Medica, Aetna, Cigna, Humana: not fillable** (no usable TiC link to PT rates; README "What is in"). |
+| Gap | code × payer → $ below median × buyer's units a year | What is the renewal worth? | Yes, from the two rows above plus the buyer's volume. |
+| Case | payer → codes to reopen, market number per code, the ask | What do I send provider relations? | Yes, derived. |
+
+The call: sell it scoped to the payers we can benchmark, and say which on the page. The
+unfillable payers are named rather than hidden; a buyer whose biggest contract is Medica
+learns that before paying.
+
+Recipients: `outreach/contract/ledger.csv` (gitignored), built into `private/bundle/contract.json`
+by `scripts/build_contract.py`, served one token at a time by `api/contract.js`.

@@ -14,6 +14,36 @@ code-by-code table underneath for the few who scroll.
 
 `grounded: 2026-10-04 — built from Aidan's PT market analysis repo at his request`
 
+## The contract (2026-10-24)
+
+**Live:** https://pt-rates.vercel.app/contract/ · one page per recipient at `/contract/for/<token>/`
+
+A fixed-price engagement for the private sector, off the work behind our AHRQ Healthcare Choice
+submission: the buyer's fee schedule against the Minnesota market, per payer and per CPT code, the
+dollar gap at their own volume, and a one-page renegotiation case per payer. One engagement = one
+billing group (tax ID). BCBS Minnesota and HealthPartners in dollars, UCare in percent of charges;
+Medica, UHC, Aetna and Cigna are named on the page as not covered (`DATA_MODEL.md`).
+
+**$2,500, fixed. A hypothesis, set 2026-10-24.** The one published rate card found for the same
+work: Contracting Providers charges $5,000 for a review of up to four payer contracts plus one
+negotiation, and $2,500 per additional negotiation
+(https://contractingproviders.com/services/payer-contract-negotiations, read 2026-10-24). This is
+the review and the case without us sitting at the table, so it is priced at their per-contract
+add-on. Against the buyer's side: a clinic under a payer's median sits about $4 a visit below it
+(see Price below), about $5,000 a year per payer at 1,250 visits; two payers make the fee about a
+quarter of one year's gap.
+
+How it sells: `POST /api/checkout` with `{"offer":"contract"}` charges `offer.json` → `contract.price_usd`,
+tags the session `metadata.kind=contract` (and `metadata.for=<token>`), and the existing webhook
+emails the buyer what happens next plus the full-table password, and sends Aidan a `Sale: CONTRACT`
+notice. Same Stripe router registration as the table (`metadata.product=pt-rates`).
+Funnel events: `contract_open`, `checkout_open`, `paid` (all with `offer=contract`).
+
+Recipients: `outreach/contract/ledger.csv` (gitignored; name, title, org, email + status, the
+record quoted, token). `python3 scripts/build_contract.py` writes `private/bundle/contract.json`
+(served one token at a time by `api/contract.js`, never static) and one draft per row to
+`outreach/contract/drafts/`. Drafts are not sent from here.
+
 ## The paywall
 
 Free: any clinic's own rates against the market, per payer, per code and per visit, plus

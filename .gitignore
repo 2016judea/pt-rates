@@ -9,3 +9,5 @@ pipeline/cache/
 .env
 /outreach/round1/
 site/api/_full
+/outreach/contract/ledger.csv
+/outreach/contract/drafts/

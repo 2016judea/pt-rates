@@ -7,9 +7,14 @@ module.exports = async (req, res) => {
   if (req.method !== "POST") return res.status(405).json({ error: "POST only" });
   try {
     const { nonce, password } = newPassword();
-    // Back to the page they bought from: / or their own /for/<token>/.
+    // Two things are sold here: the full table (OFFER) and the fixed-price contract (OFFER.contract,
+    // sold from /contract/ and /contract/for/<token>/). Both mint a password, so a contract buyer
+    // gets the full table on the day they pay; metadata.kind tells the emails apart.
+    const contract = req.body && req.body.offer === "contract";
+    const O = contract ? OFFER.contract : OFFER;
+    // Back to the page they bought from: /, /for/<token>/, /contract/ or /contract/for/<token>/.
     const from = String((req.body && req.body.path) || "/");
-    const back = /^\/(for\/[a-z0-9]{6,16}\/?)?$/.test(from) ? from : "/";
+    const back = /^\/((contract\/)?(for\/[a-z0-9]{6,16}\/?)?|contract)$/.test(from) ? from : contract ? "/contract/" : "/";
     const s = await stripe("checkout/sessions", {
       method: "POST",
       form: {
@@ -17,14 +22,14 @@ module.exports = async (req, res) => {
         mode: "payment",
         "line_items[0][quantity]": "1",
         "line_items[0][price_data][currency]": "usd",
-        "line_items[0][price_data][unit_amount]": String(OFFER.price_usd * 100),
-        "line_items[0][price_data][product_data][name]": OFFER.name,
-        "line_items[0][price_data][product_data][description]": OFFER.description,
+        "line_items[0][price_data][unit_amount]": String(O.price_usd * 100),
+        "line_items[0][price_data][product_data][name]": O.name,
+        "line_items[0][price_data][product_data][description]": O.description,
         "payment_method_types[0]": "card",
         "payment_method_types[1]": "link",
         customer_creation: "always",
         "invoice_creation[enabled]": "true",
-        "invoice_creation[invoice_data][description]": OFFER.name,
+        "invoice_creation[invoice_data][description]": O.name,
         "invoice_creation[invoice_data][custom_fields][0][name]": "Password",
         "invoice_creation[invoice_data][custom_fields][0][value]": password,
         "invoice_creation[invoice_data][custom_fields][1][name]": "Open at",
@@ -32,11 +37,14 @@ module.exports = async (req, res) => {
         "invoice_creation[invoice_data][footer]": `Your password: ${password}. Open the ${OFFER.thing} at ${SITE}/?pw=${password}. Brick & Mortar · hello@brickandmortar.dev`,
         "invoice_creation[invoice_data][metadata][product]": PRODUCT,
         "metadata[product]": PRODUCT,
+        "metadata[kind]": contract ? "contract" : "table",
+        ...(contract ? { "metadata[for]": String((from.match(/for\/([a-z0-9]{6,16})/) || [])[1] || "") } : {}),
         "metadata[pw_nonce]": nonce,
         "metadata[password]": password,
         "payment_intent_data[metadata][product]": PRODUCT,
         "payment_intent_data[metadata][pw_nonce]": nonce,
-        "payment_intent_data[description]": OFFER.name,
+        "payment_intent_data[metadata][kind]": contract ? "contract" : "table",
+        "payment_intent_data[description]": O.name,
         return_url: `${SITE}${back}?paid={CHECKOUT_SESSION_ID}`,
       },
     });

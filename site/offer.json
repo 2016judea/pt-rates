@@ -1,11 +1,23 @@
 {
-  "product": "pt-rates",
-  "site": "https://pt-rates.vercel.app",
-  "price_usd": 500,
-  "launch": 1792022400,
-  "name": "PT Rates: the full table",
-  "short": "PT Rates",
-  "thing": "full table",
-  "description": "Every Twin Cities PT clinic's published rate, per payer, per code and per visit, side by side.",
-  "line": "The full table, every clinic and every payer, is $500, once."
+ "product": "pt-rates",
+ "site": "https://pt-rates.vercel.app",
+ "price_usd": 500,
+ "launch": 1792022400,
+ "name": "PT Rates: the full table",
+ "short": "PT Rates",
+ "thing": "full table",
+ "description": "Every Twin Cities PT clinic's published rate, per payer, per code and per visit, side by side.",
+ "line": "The full table, every clinic and every payer, is $500, once.",
+ "contract": {
+  "price_usd": 2500,
+  "name": "PT Rates: fee schedule review and renegotiation case",
+  "short": "PT Rates contract",
+  "description": "Your fee schedule against the Minnesota market, per payer and per CPT code, with the dollar gap at your visit volume and a one-page renegotiation case for each payer. Delivered in 10 business days.",
+  "line": "$2,500, fixed. Delivered in 10 business days.",
+  "payers": [
+   "BCBS Minnesota",
+   "HealthPartners",
+   "UCare"
+  ]
+ }
 }

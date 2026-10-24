@@ -21,3 +21,13 @@ def test_only_public_is_static_and_the_bundle_is_outside_it():
     assert full and all(r.startswith("api/_full/") for r in full), full
     assert "public/index.html" in rels and "offer.json" in rels  # api/_lib.js requires it
     assert not any(r.startswith("public/api") for r in rels)
+
+
+def test_contract_recipient_list_is_bundled_not_static():
+    # The list of who we wrote to (org per token) ships only as api/_full/contract.json,
+    # read by api/contract.js. Never under public/.
+    rels = [str(rel) for rel, _ in deploy.collect()]
+    assert "api/_full/contract.json" in rels, "run scripts/build_contract.py"
+    assert not any("contract.json" in r and not r.startswith("api/_full/") for r in rels)
+    fn = json.loads((ROOT / "site/vercel.json").read_text())["functions"]["api/contract.js"]
+    assert "api/_full/contract.json" in fn["includeFiles"]

@@ -110,10 +110,17 @@ async function sendPasswordOnce(session, { who }) {
   const pw = fresh.metadata.password;
   const link = `${SITE}/?pw=${encodeURIComponent(pw)}`;
   const from = process.env.MAILGUN_FROM || "aidan@brickandmortar.dev";
+  // A contract buyer (metadata.kind = "contract") booked the engagement; the password is a bonus
+  // they can use the same day. Their email says what happens next, and the sale notice says CONTRACT.
+  const contract = fresh.metadata?.kind === "contract";
+  const C = OFFER.contract || {};
+  const intro = contract
+    ? [`Thanks for booking ${C.name}.`, ``,
+       `What happens next: I'll write from this address within one business day and ask for your current fee schedules for ${(C.payers || []).join(", ")} (an export or a PDF of the contracted amounts is plenty; no patient data, ever). The review and the case for each payer land in your inbox 10 business days after that.`, ``,
+       `Until then, the full table of every Twin Cities clinic's rates is yours to use. Your password: ${pw}`]
+    : [`Thanks for buying ${OFFER.name}.`, ``, `Your password: ${pw}`];
   const text = [
-    `Thanks for buying ${OFFER.name}.`,
-    ``,
-    `Your password: ${pw}`,
+    ...intro,
     ``,
     `Open the ${OFFER.thing}: ${link}`,
     ``,
@@ -125,7 +132,9 @@ async function sendPasswordOnce(session, { who }) {
     `Brick & Mortar`,
   ].join("\n");
   const html = `<div style="font:16px/1.5 -apple-system,Segoe UI,Helvetica,Arial,sans-serif;color:#1a1a1a;max-width:520px">
-<p>Thanks for buying ${OFFER.name}.</p>
+${contract ? `<p>Thanks for booking ${C.name}.</p>
+<p>What happens next: I'll write from this address within one business day and ask for your current fee schedules for ${(C.payers || []).join(", ")} (an export or a PDF of the contracted amounts is plenty; no patient data, ever). The review and the case for each payer land in your inbox 10 business days after that.</p>
+<p>Until then, the full table of every Twin Cities clinic's rates is yours to use.</p>` : `<p>Thanks for buying ${OFFER.name}.</p>`}
 <p>Your password:<br><b style="font:600 22px ui-monospace,Menlo,monospace;letter-spacing:2px">${pw}</b></p>
 <p><a href="${link}" style="display:inline-block;padding:12px 20px;background:#1f4fd1;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Open the ${OFFER.thing}</a></p>
 <p>That link unlocks it on whatever device you open it on. On another device, go to <a href="${SITE}">${SITE.replace("https://", "")}</a> and enter the password under "Have a password?".</p>
@@ -133,7 +142,7 @@ async function sendPasswordOnce(session, { who }) {
 <p>Aidan<br>Brick &amp; Mortar</p></div>`;
   let id;
   try {
-    id = await mailgun({ from: `Aidan at Brick & Mortar <${from}>`, to, subject: `Your password to ${OFFER.name}`, text, html, "h:Reply-To": from });
+    id = await mailgun({ from: `Aidan at Brick & Mortar <${from}>`, to, subject: contract ? `Booked: ${C.name}` : `Your password to ${OFFER.name}`, text, html, "h:Reply-To": from });
   } catch (e) {
     await mark("").catch(() => {}); // let the other path (webhook retry, status page) try again
     throw e;
@@ -142,8 +151,8 @@ async function sendPasswordOnce(session, { who }) {
   console.log(`[pw] emailed ${to} for ${session.id} by ${who}`);
   await mailgun({
     from: `${OFFER.short} <${from}>`, to: process.env.NOTIFY_EMAIL || "aidan@brickandmortar.dev",
-    subject: `Sale: ${OFFER.short}, $${(fresh.amount_total || 0) / 100} from ${to}`,
-    text: `${to} bought the ${OFFER.thing} (${fresh.payment_status}). Session ${fresh.id}. Password ${pw} was emailed to them by the ${who}.\nReprint it any time: python scripts/fulfil.py ${fresh.id}`,
+    subject: `Sale: ${contract ? "CONTRACT " + C.short : OFFER.short}, $${(fresh.amount_total || 0) / 100} from ${to}`,
+    text: `${to} ${contract ? "bought the CONTRACT (" + (fresh.metadata?.for ? "/contract/for/" + fresh.metadata.for + "/" : "/contract/") + "). Write within one business day for their fee schedules. They also got" : "bought"} the ${OFFER.thing} (${fresh.payment_status}). Session ${fresh.id}. Password ${pw} was emailed to them by the ${who}.\nReprint it any time: python scripts/fulfil.py ${fresh.id}`,
   }).catch((e) => console.error("[pw] sale notice failed:", e.message));
   return { sent: true };
 }
