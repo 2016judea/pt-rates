@@ -22,7 +22,7 @@ DRAFTS = ROOT / "outreach" / "contract" / "drafts"
 OUT = ROOT / "private" / "bundle" / "contract.json"
 SITE = json.loads((ROOT / "site" / "offer.json").read_text())["site"]
 PRICE = json.loads((ROOT / "site" / "offer.json").read_text())["contract"]["price_usd"]
-SUBSTACK = "https://randomaidan.substack.com/p/business-prototypes"
+SUBSTACK = "https://aidanjude.vercel.app/random/business-prototypes"
 MINUTES = "45"
 
 MARKET = json.loads((ROOT / "site" / "data" / "market.json").read_text())

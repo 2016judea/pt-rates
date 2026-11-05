@@ -4,7 +4,7 @@
 
 **Competitive Market Analysis.** What everyone in your sector is charging for a given service.
 
-— Aidan, [*Business Prototypes*](https://randomaidan.substack.com/p/business-prototypes), 2026-10-12. Sibling instance of the same product: [Salon rates](https://github.com/2016judea/salon-rates) (live at https://salon-rates.vercel.app). This one is the physical-therapy sector, where the price is what each insurer pays a clinic per billing code.
+— Aidan, [*Business Prototypes*](https://aidanjude.vercel.app/random/business-prototypes), 2026-10-12. Sibling instance of the same product: [Salon rates](https://github.com/2016judea/salon-rates) (live at https://salon-rates.vercel.app). This one is the physical-therapy sector, where the price is what each insurer pays a clinic per billing code.
 
 A phone-first page for one kind of reader: the owner of an independent physical
 therapy clinic, between patients, who wants to know whether an insurer pays them
