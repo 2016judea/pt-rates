@@ -189,7 +189,7 @@ Physical-Therapy-Market-Analysis (DuckDB)  ──precompute.py──▶  site/da
 
 - `pipeline/refresh.sh` drives Aidan's
   [Physical-Therapy-Market-Analysis](https://github.com/2016judea/Physical-Therapy-Market-Analysis)
-  clone at `~/Desktop/pt-rates-data` (patches in `pipeline/patches/`), then runs
+  clone at `~/Desktop/workspace/pt-rates-data` (patches in `pipeline/patches/`), then runs
   `pipeline/precompute.py`, which writes:
   - `site/data/meta.json` — payers, counts, file dates, code gloss, the default clinic
   - `site/data/clinics.json` — the search list
@@ -206,19 +206,19 @@ Physical-Therapy-Market-Analysis (DuckDB)  ──precompute.py──▶  site/da
 
 ```bash
 # 0. one-time: the pipeline clone
-git clone https://github.com/2016judea/Physical-Therapy-Market-Analysis ~/Desktop/pt-rates-data
-cd ~/Desktop/pt-rates-data && uv venv .venv && VIRTUAL_ENV=$PWD/.venv uv pip install -e .
-git apply ~/Desktop/pt-rates/pipeline/patches/*.patch        # Oct-2026 HP URLs, tolerant UCare TOC
-cp ~/Desktop/pt-rates/pipeline/user_config.json data/        # Twin Cities zips, Maverick as primary
+git clone https://github.com/2016judea/Physical-Therapy-Market-Analysis ~/Desktop/workspace/pt-rates-data
+cd ~/Desktop/workspace/pt-rates-data && uv venv .venv && VIRTUAL_ENV=$PWD/.venv uv pip install -e .
+git apply ~/Desktop/workspace/pt-rates/pipeline/patches/*.patch        # Oct-2026 HP URLs, tolerant UCare TOC
+cp ~/Desktop/workspace/pt-rates/pipeline/user_config.json data/        # Twin Cities zips, Maverick as primary
 
 # 1. NPPES + UCare + HealthPartners (19 networks x 700 MB, ~5 min each), then the slices
-~/Desktop/pt-rates/pipeline/refresh.sh
+~/Desktop/workspace/pt-rates/pipeline/refresh.sh
 
 # 2. BCBS MN: 342 Local parts from the newest monthly index (~40 s each; Aware is the first 25)
-~/Desktop/pt-rates/pipeline/refresh.sh bcbs
+~/Desktop/workspace/pt-rates/pipeline/refresh.sh bcbs
 
 # 3. slices only (after any ingest finishes), check, README table, deploy
-~/Desktop/pt-rates/pipeline/refresh.sh slices
+~/Desktop/workspace/pt-rates/pipeline/refresh.sh slices
 python3 scripts/check_slices.py && python3 scripts/update_readme.py && VERCEL_TOKEN=... python3 scripts/deploy.py
 ```
 

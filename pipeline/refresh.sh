@@ -17,7 +17,7 @@
 # the pipeline's own json.loads() ingesters do not fit in memory.
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")/.." && pwd)"
-PIPE="${PIPE:-$HOME/Desktop/pt-rates-data}"
+PIPE="${PIPE:-$HOME/Desktop/workspace/pt-rates-data}"
 PY="$PIPE/.venv/bin/python"
 mkdir -p "$PIPE/logs" "$PIPE/data"
 [ -s "$PIPE/data/user_config.json" ] || cp "$HERE/pipeline/user_config.json" "$PIPE/data/"

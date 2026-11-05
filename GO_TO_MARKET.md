@@ -1,7 +1,7 @@
 # Go to market — PT Rates
 
 `grounded: 2026-10-13` — written with the per-visit iteration, after the 10/04 batch (51
-clinic gift emails, 0 replies) and the customer map `~/Desktop/customer-lab/maps/pt-rates.json`.
+clinic gift emails, 0 replies) and the customer map `~/Desktop/workspace/customer-lab/maps/pt-rates.json`.
 
 **What we are distributing:** a free page that prices a Twin Cities PT clinic's visit, per
 payer, against every other clinic in that payer's file, against Medicare, and against the
@@ -59,7 +59,7 @@ Spread sends over days: Mailgun allows 100 requests per rolling 24h across every
 8. **Never claim it fixes slow claims or raises a rate.** It shows where a rate sits. *Why:*
    job_map marks claim delays "none" and rate changes "partial".
 9. **Three touches before silence counts, reply kinds logged.** Ledger:
-   `~/Desktop/bricks/data/outreach/pt_rates/tokens.csv`. *Why:* distribution-channel rule 5.
+   `~/Desktop/workspace/bricks/data/outreach/pt_rates/tokens.csv`. *Why:* distribution-channel rule 5.
    Touch 2 must not repeat touch 1 (the gift link + one sentence).
 10. **Read use, not the inbox.** Per-clinic links carry `?clinic=`; PostHog + Vercel
     Analytics are on every page. *Why:* "Just because someone didn't respond to my email,
